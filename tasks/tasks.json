@@ -2,9 +2,9 @@
   {
     "id": "normalize-evaluar",
     "categoria": "scripts",
-    "descripcion": "Evaluar si normalize_dataset.py (invierte fondo negro de FloorPlanCAD a blanco como BLD-AR) es necesario, simplificable o integrable en svg_to_json.py",
+    "descripcion": "Evaluar si normalize_dataset.py (invierte fondo negro de FloorPlanCAD a blanco como BLD-AR) es necesario, simplificable o integrable en floorplancad_to_labelme.py",
     "pasos": [
-      "Revisar scripts/preprocessing/normalize_dataset.py y dónde se generan los PNG en svg_to_json.py",
+      "Revisar scripts/preprocessing/normalize_dataset.py y dónde se generan los PNG en floorplancad_to_labelme.py",
       "Proponer al usuario: mantener, simplificar o integrar",
       "Documentar la decisión en docs/",
       "Eliminar del docstring la cita a POLARITY-FINDING.md (no existe en el repo)",
@@ -17,7 +17,7 @@
   {
     "id": "svg-simplificar",
     "categoria": "scripts",
-    "descripcion": "Evaluar si scripts/conversion/svg_to_json.py (~880 líneas) se puede simplificar",
+    "descripcion": "Evaluar si scripts/conversion/floorplancad_to_labelme.py (~880 líneas) se puede simplificar",
     "pasos": [
       "Identificar código muerto, duplicado o abstracciones innecesarias",
       "Proponer cambios al usuario antes de aplicarlos",
@@ -25,12 +25,38 @@
     ],
     "verificacion": "Salida LabelMe idéntica antes y después del cambio sobre una muestra de SVG",
     "requiere_servidor": false,
+    "passes": true
+  },
+  {
+    "id": "renombrar-scripts",
+    "categoria": "scripts",
+    "descripcion": "Renombrar svg_to_json.py a floorplancad_to_labelme.py y labelme_to_yolo.py a floorplancad_labeled_to_yolo.py",
+    "pasos": [
+      "Renombrar ambos scripts en scripts/conversion/",
+      "Actualizar las referencias en docs/, README.md y CLAUDE.md"
+    ],
+    "verificacion": "No quedan referencias a los nombres viejos en docs/, README.md ni CLAUDE.md, y ambos scripts corren con --help con sus nombres nuevos",
+    "requiere_servidor": false,
+    "passes": true
+  },
+  {
+    "id": "svg-paredes",
+    "categoria": "scripts",
+    "descripcion": "Corregir el etiquetado de wall en floorplancad_to_labelme.py, que genera demasiados polígonos incorrectos: generar un polígono por pared, determinando dónde corta cada una (unir todo daría un solo polígono continuo para todo el plano)",
+    "pasos": [
+      "Analizar cómo se representan las paredes en los SVG (paths, instance-id, capas)",
+      "Proponer al usuario un criterio para determinar dónde corta cada pared",
+      "Implementar el criterio aprobado",
+      "Comparar visualmente las anotaciones de wall antes y después sobre una muestra de planos"
+    ],
+    "verificacion": "En una muestra de planos, cada pared queda como un polígono propio y no hay polígonos espurios (comparación visual aprobada por el usuario)",
+    "requiere_servidor": false,
     "passes": false
   },
   {
     "id": "svg-elipses-rotadas",
     "categoria": "scripts",
-    "descripcion": "Aplicar en svg_to_json.py la rotación de las elipses (transform=\"rotate(...)\"), que hoy se ignora; afecta al 83 % de las elipses",
+    "descripcion": "Aplicar en floorplancad_to_labelme.py la rotación de las elipses (transform=\"rotate(...)\"), que hoy se ignora; afecta al 83 % de las elipses",
     "pasos": [
       "Aplicar la rotación al muestrear puntos y al convertir elipses en polígonos",
       "Comparar visualmente las anotaciones de lavabos, mesas de luz y bañeras antes y después"
@@ -42,7 +68,7 @@
   {
     "id": "labelme-simplificar",
     "categoria": "scripts",
-    "descripcion": "Evaluar si scripts/conversion/labelme_to_yolo.py se puede simplificar y confirmar el manejo de la semilla aleatoria",
+    "descripcion": "Evaluar si scripts/conversion/floorplancad_labeled_to_yolo.py se puede simplificar y confirmar el manejo de la semilla aleatoria",
     "pasos": [
       "Confirmar que RANDOM_SEED (línea 16, aplicado en main) cubre todo uso de aleatoriedad",
       "Proponer simplificaciones al usuario",
@@ -70,7 +96,7 @@
     "descripcion": "Construir y documentar la tabla de equivalencias entre clases de BLD-AR y FloorPlanCAD",
     "pasos": [
       "Listar las clases presentes en los JSON de datasets/BLD-AR",
-      "Listar las clases de FloorPlanCAD (SEMANTIC_IDS en svg_to_json.py y el paper)",
+      "Listar las clases de FloorPlanCAD (SEMANTIC_IDS en floorplancad_to_labelme.py y el paper)",
       "Proponer equivalencias y consultar las dudosas con el usuario",
       "Escribir docs/mapeo_clases.md"
     ],

@@ -31,7 +31,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 
 ## Estructura
 ```
-scripts/conversion/     # svg_to_json.py, labelme_to_yolo.py
+scripts/conversion/     # floorplancad_to_labelme.py, floorplancad_labeled_to_yolo.py
 scripts/evaluation/     # inferencia con SAHI
 model-training/         # notebook de entrenamiento del modelo de segmentación
 runs/                   # resultados de los entrenamientos

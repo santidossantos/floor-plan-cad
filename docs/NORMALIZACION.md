@@ -1,6 +1,6 @@
 # Normalización de imágenes
 
-**Decisión:** `svg_to_json.py` guarda cada PNG de FloorPlanCAD con fondo blanco y líneas oscuras, como en BLD-AR. Reemplaza a `normalize_dataset.py`, que hacía lo mismo en un paso aparte sobre el dataset YOLO.
+**Decisión:** `floorplancad_to_labelme.py` guarda cada PNG de FloorPlanCAD con fondo blanco y líneas oscuras, como en BLD-AR. Reemplaza a `normalize_dataset.py`, que hacía lo mismo en un paso aparte sobre el dataset YOLO.
 
 ## Hallazgos
 - Los PNG de FloorPlanCAD (15 663, todos RGBA) tienen fondo transparente con RGB = 0, así que YOLO los lee con fondo negro. BLD-AR tiene fondo blanco y líneas oscuras.

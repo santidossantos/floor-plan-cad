@@ -29,7 +29,7 @@ datasets/
 Genera las anotaciones LabelMe JSON a partir de cada par SVG/PNG y guarda cada PNG con fondo blanco y líneas oscuras, como en los planos analógicos (ver `docs/NORMALIZACION.md`). Cada carpeta de entrada se escribe en `datasets/floor-plan-cad-labelme/<carpeta>`.
 
 ```bash
-python scripts/conversion/svg_to_json.py \
+python scripts/conversion/floorplancad_to_labelme.py \
   --input  datasets/FloorPlanCAD/train-00 datasets/FloorPlanCAD/train-01 datasets/FloorPlanCAD/test-00 \
   --output datasets/floor-plan-cad-labelme
 ```
@@ -39,7 +39,7 @@ python scripts/conversion/svg_to_json.py \
 Junta las carpetas y las divide en train/val/test (80/10/10).
 
 ```bash
-python scripts/conversion/labelme_to_yolo.py \
+python scripts/conversion/floorplancad_labeled_to_yolo.py \
   --dataset datasets/floor-plan-cad-labelme/train-00 datasets/floor-plan-cad-labelme/train-01 datasets/floor-plan-cad-labelme/test-00 \
   --output  datasets/floor-plan-cad-yolo
 ```
