@@ -1,0 +1,118 @@
+[
+  {
+    "id": "normalize-evaluar",
+    "categoria": "scripts",
+    "descripcion": "Evaluar si normalize_dataset.py (invierte fondo negro de FloorPlanCAD a blanco como BLD-AR) es necesario, simplificable o integrable en svg_to_json.py",
+    "pasos": [
+      "Revisar scripts/preprocessing/normalize_dataset.py y dónde se generan los PNG en svg_to_json.py",
+      "Proponer al usuario: mantener, simplificar o integrar",
+      "Documentar la decisión (y el hallazgo de polaridad que cita POLARITY-FINDING.md, inexistente) en docs/decisiones/",
+      "Traducir comentarios al español"
+    ],
+    "verificacion": "Decisión documentada en docs/decisiones/ y script resultante aprobado por el usuario",
+    "requiere_servidor": false,
+    "passes": false
+  },
+  {
+    "id": "svg-simplificar",
+    "categoria": "scripts",
+    "descripcion": "Evaluar si scripts/conversion/svg_to_json.py (~880 líneas) se puede simplificar",
+    "pasos": [
+      "Identificar código muerto, duplicado o abstracciones innecesarias",
+      "Proponer cambios al usuario antes de aplicarlos",
+      "Aplicar cambios aprobados y traducir comentarios al español"
+    ],
+    "verificacion": "Salida LabelMe idéntica antes y después del cambio sobre una muestra de SVG",
+    "requiere_servidor": false,
+    "passes": false
+  },
+  {
+    "id": "labelme-simplificar",
+    "categoria": "scripts",
+    "descripcion": "Evaluar si scripts/conversion/labelme_to_yolo.py se puede simplificar y confirmar el manejo de la semilla aleatoria",
+    "pasos": [
+      "Confirmar que RANDOM_SEED (línea 16, aplicado en main) cubre todo uso de aleatoriedad",
+      "Proponer simplificaciones al usuario",
+      "Aplicar cambios aprobados y traducir comentarios al español"
+    ],
+    "verificacion": "Dos ejecuciones con las mismas entradas producen el mismo split",
+    "requiere_servidor": false,
+    "passes": false
+  },
+  {
+    "id": "versiones-fijas",
+    "categoria": "reproducibilidad",
+    "descripcion": "Fijar versiones de ultralytics y sahi en requirements.txt y quitar uv de las dependencias",
+    "pasos": [
+      "Confirmar con el usuario las versiones a usar",
+      "Actualizar requirements.txt con versiones exactas (==)"
+    ],
+    "verificacion": "pip install -r requirements.txt funciona en un .venv limpio",
+    "requiere_servidor": false,
+    "passes": false
+  },
+  {
+    "id": "mapeo-clases",
+    "categoria": "datos",
+    "descripcion": "Construir y documentar la tabla de equivalencias entre clases de BLD-AR y FloorPlanCAD",
+    "pasos": [
+      "Listar las clases presentes en los JSON de datasets/BLD-AR",
+      "Listar las clases de FloorPlanCAD (SEMANTIC_IDS en svg_to_json.py y el paper)",
+      "Proponer equivalencias y consultar las dudosas con el usuario",
+      "Escribir docs/mapeo_clases.md"
+    ],
+    "verificacion": "Tabla aprobada por el usuario; toda clase de BLD-AR tiene equivalente o está marcada como excluida",
+    "requiere_servidor": false,
+    "passes": false
+  },
+  {
+    "id": "augmentations-propuesta",
+    "categoria": "entrenamiento",
+    "descripcion": "Proponer las augmentations necesarias para transferir de planos sintéticos a analógicos",
+    "pasos": [
+      "Proponer augmentations (ruido, manchas, desgaste, variación de tono) con justificación",
+      "Documentar en docs/decisiones/"
+    ],
+    "verificacion": "Propuesta aprobada por el usuario",
+    "requiere_servidor": false,
+    "passes": false
+  },
+  {
+    "id": "notebook-entrenamiento",
+    "categoria": "entrenamiento",
+    "descripcion": "Notebook en trainings/ que entrena YOLO26 sobre FloorPlanCAD con imgsz=720 y batch=4",
+    "pasos": [
+      "Crear el notebook respetando el formato de CLAUDE.md",
+      "Incluir las augmentations aprobadas y semilla fija",
+      "No ejecutar localmente"
+    ],
+    "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
+    "requiere_servidor": true,
+    "passes": false
+  },
+  {
+    "id": "evaluacion-sahi",
+    "categoria": "evaluacion",
+    "descripcion": "Script en scripts/evaluation/ que hace inferencia por tiles con SAHI sobre BLD-AR y calcula métricas",
+    "pasos": [
+      "Definir con el usuario tamaño de tile, solapamiento y métricas",
+      "Implementar el script aplicando el mapeo de clases",
+      "No ejecutar localmente"
+    ],
+    "verificacion": "El usuario confirma que la evaluación corrió en el servidor",
+    "requiere_servidor": true,
+    "passes": false
+  },
+  {
+    "id": "readme-actualizar",
+    "categoria": "documentacion",
+    "descripcion": "Actualizar README.md con los cambios finales del pipeline hasta el dataset YOLO",
+    "pasos": [
+      "Revisar comandos y argumentos de cada script",
+      "Actualizar los pasos del README"
+    ],
+    "verificacion": "Los comandos del README coinciden con los argumentos actuales de los scripts",
+    "requiere_servidor": false,
+    "passes": false
+  }
+]
