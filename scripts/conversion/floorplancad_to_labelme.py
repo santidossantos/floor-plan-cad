@@ -4,7 +4,7 @@ Cada clase del dataset la produce un detector que combina tres estrategias:
 cómo se seleccionan los elementos (semantic-id y/o etiqueta de capa de
 Inkscape), cómo se agrupan en instancias (instance-id, clustering espacial,
 unión global o por elemento) y cómo cada grupo se vuelve un polígono
-(envolvente convexa, caja o la geometría unida).
+(envolvente convexa, caja, la geometría unida o el contorno dibujado).
 
 Además, guarda cada PNG normalizado a fondo blanco y líneas oscuras, como los
 planos analógicos (ver docs/NORMALIZACION.md).
@@ -579,6 +579,66 @@ def merge_junctions(pieces, t):
 
 
 # ============================================================================
+# Contornos de sanitarios: siguen el trazo dibujado en vez de la envolvente
+# ============================================================================
+def symbol_strokes(elements):
+    """Trazos de los elementos: la línea de cada path y el borde de cada circle o ellipse."""
+    strokes = []
+    for element in elements:
+        if element["type"] == "path":
+            points = extract_points(element)
+            if len(points) >= 2:
+                strokes.append(LineString(points))
+        elif (polygon := element_to_polygon(element)) is not None:
+            strokes.append(polygon.exterior)
+    return strokes
+
+
+def without_stray_lines(strokes):
+    """Quita las rectas más largas que la diagonal de la caja del resto del símbolo.
+
+    Son bordes de mesada o ejes que comparten instance-id con el símbolo y
+    estirarían su envolvente.
+    """
+    kept = []
+    for i, stroke in enumerate(strokes):
+        others = strokes[:i] + strokes[i + 1:]
+        straight = math.dist(stroke.coords[0], stroke.coords[-1]) >= 0.999 * stroke.length
+        if straight and others:
+            x0, y0, x1, y1 = shapely.total_bounds(others)
+            if stroke.length > math.hypot(x1 - x0, y1 - y0):
+                continue
+        kept.append(stroke)
+    return kept
+
+
+def connected_strokes(strokes, candidates, tree, touch, growth):
+    """Candidatos conectados en cadena a los trazos, sin salir de su caja agrandada en `growth`."""
+    x0, y0, x1, y1 = shapely.total_bounds(strokes)
+    margin = growth * max(x1 - x0, y1 - y0)
+    limit = box(x0 - margin, y0 - margin, x1 + margin, y1 + margin)
+    added, frontier = set(), strokes
+    while frontier:
+        found = {int(j) for j in tree.query(frontier, predicate="dwithin", distance=touch)[1]
+                 if int(j) not in added and limit.contains(candidates[j])}
+        added |= found
+        frontier = [candidates[j] for j in found]
+    return [candidates[j] for j in sorted(added)]
+
+
+def enclosed_region(strokes, gap, opening):
+    """Mayor región encerrada por los trazos, cerrando huecos de hasta 2 * gap.
+
+    Los trazos se engrosan, se rellenan los huecos que encierran y se erosionan;
+    la erosión extra seguida de dilatación (`opening`) quita astillas finas.
+    """
+    bands = unary_union([stroke.buffer(gap, quad_segs=4) for stroke in strokes])
+    filled = unary_union([Polygon(band.exterior) for band in iter_polygons(bands)])
+    region = filled.buffer(-(gap + opening), quad_segs=4).buffer(opening, quad_segs=4)
+    return max(iter_polygons(region), key=lambda part: part.area, default=None)
+
+
+# ============================================================================
 # Detectores
 # ============================================================================
 def group_by_instance_id(elements):
@@ -728,6 +788,61 @@ class FilledOutlineDetector(SymbolDetector):
                 for piece in iter_polygons(footprint)]
 
 
+class OutlineDetector(SymbolDetector):
+    """Una forma por grupo de instance-id que sigue el contorno dibujado.
+
+    Se usa para sanitarios (sink, urinal, squat_toilet), donde la envolvente
+    convexa falla de tres maneras: rectas del grupo que no son el símbolo
+    (bordes de mesada, ejes) la estiran; parte del contorno viene sin
+    semantic-id, como curvas explotadas en segmentos cortos; y rellena las
+    concavidades. Por eso se quitan esas rectas, se suman los segmentos cortos
+    sin etiqueta del mismo color conectados al símbolo, y se usa la región
+    encerrada por los trazos si cubre casi toda la envolvente. Si no la cubre,
+    el símbolo está abierto (p. ej. contra la pared) y queda la envolvente.
+    """
+
+    GAP = 0.25
+    OPENING = 0.1
+    TOUCH = 0.02
+    GROWTH = 0.3
+    LOOSE_MAX_LENGTH = 0.5
+    MIN_FILL = 0.8
+    SIMPLIFY_TOLERANCE = 0.02
+
+    def detect(self, elements):
+        # Los trazos sin etiqueta del plano pueden completar el contorno
+        self.elements = elements
+        return super().detect(elements)
+
+    def build_polygons(self, selected):
+        groups = group_by_instance_id(selected).values()
+        colors = {element["attrs"].get("stroke") for group in groups for element in group}
+        loose, loose_colors = [], []
+        for element in self.elements:
+            color = element["attrs"].get("stroke")
+            if element["semantic_id"] is None and element["type"] == "path" and color in colors:
+                for line in symbol_strokes([element]):
+                    if line.length <= self.LOOSE_MAX_LENGTH:
+                        loose.append(line)
+                        loose_colors.append(color)
+
+        polygons = []
+        for group in groups:
+            strokes = without_stray_lines(symbol_strokes(group))
+            if not strokes:
+                continue
+            group_colors = {element["attrs"].get("stroke") for element in group}
+            candidates = [line for line, color in zip(loose, loose_colors) if color in group_colors]
+            if candidates:
+                strokes += connected_strokes(strokes, candidates, shapely.STRtree(candidates),
+                                             self.TOUCH, self.GROWTH)
+            hull = unary_union(strokes).convex_hull
+            region = enclosed_region(strokes, self.GAP, self.OPENING)
+            shape = region if region is not None and region.area >= self.MIN_FILL * hull.area else hull
+            polygons.append(shape.simplify(self.SIMPLIFY_TOLERANCE))
+        return polygons
+
+
 class PerElementEnvelopeDetector(SymbolDetector):
     """Una caja alineada a los ejes por elemento, sin agrupar.
 
@@ -864,9 +979,9 @@ def build_detectors(border):
                             InkscapeLabelSelection("elevator", exact=True, only_unlabeled=False)),
         InstanceGroupDetector("escalator", SemanticIdSelection("escalator")),
         InstanceGroupDetector("airconditioner", SemanticIdSelection("airconditioner")),
-        InstanceGroupDetector("sink", SemanticIdSelection("sink")),
-        InstanceGroupDetector("urinal", SemanticIdSelection("urinal")),
-        InstanceGroupDetector("squat_toilet", SemanticIdSelection("squat_toilet")),
+        OutlineDetector("sink", SemanticIdSelection("sink")),
+        OutlineDetector("urinal", SemanticIdSelection("urinal")),
+        OutlineDetector("squat_toilet", SemanticIdSelection("squat_toilet")),
         InstanceGroupDetector("wardrobe", SemanticIdSelection("wardrobe"),
                               shape_fn=envelope_shape),
         InstanceGroupDetector("gas_stove", SemanticIdSelection("gas_stove")),
