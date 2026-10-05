@@ -51,7 +51,7 @@
     ],
     "verificacion": "En una muestra de planos, cada pared queda como un polígono propio y no hay polígonos espurios (comparación visual aprobada por el usuario)",
     "requiere_servidor": false,
-    "passes": false
+    "passes": true
   },
   {
     "id": "svg-elipses-rotadas",
