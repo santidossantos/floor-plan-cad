@@ -14,13 +14,14 @@ import argparse
 import json
 import math
 import os
+import re
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
 import numpy as np
 import shapely
 from PIL import Image
-from shapely.affinity import scale
+from shapely.affinity import rotate, scale
 from shapely.geometry import LineString, MultiLineString, MultiPoint, Point, Polygon, box
 from shapely.ops import polygonize, split, unary_union
 from shapely.prepared import prep
@@ -125,6 +126,18 @@ def ellipse_params(element):
     return cx, cy, rx, ry
 
 
+ROTATE_PATTERN = re.compile(r"rotate\(\s*([^,\s]+)[\s,]+([^,\s]+)[\s,]+([^,\s)]+)\s*\)")
+
+
+def element_rotation(element):
+    """Devuelve (ángulo, cx, cy) del transform="rotate(a, cx, cy)", o None.
+
+    En FloorPlanCAD las elipses siempre traen un transform de esta forma.
+    """
+    match = ROTATE_PATTERN.fullmatch(element["attrs"].get("transform", "").strip())
+    return tuple(float(v) for v in match.groups()) if match else None
+
+
 def extract_points(element):
     """Extrae los puntos de un elemento SVG (path, circle o ellipse)."""
     if element["type"] == "path":
@@ -133,7 +146,16 @@ def extract_points(element):
         cx, cy, rx, ry = ellipse_params(element)
     except Exception:
         return []
-    return sample_ellipse_points(cx, cy, rx, ry) if rx > 0 and ry > 0 else []
+    if rx <= 0 or ry <= 0:
+        return []
+    points = sample_ellipse_points(cx, cy, rx, ry)
+    rotation = element_rotation(element)
+    if rotation is None:
+        return points
+    angle, ox, oy = rotation
+    c, s = math.cos(math.radians(angle)), math.sin(math.radians(angle))
+    return [(ox + c * (x - ox) - s * (y - oy), oy + s * (x - ox) + c * (y - oy))
+            for x, y in points]
 
 
 def element_to_polygon(element):
@@ -145,8 +167,11 @@ def element_to_polygon(element):
     if rx <= 0 or ry <= 0:
         return None
     if element["type"] == "circle":
-        return Point(cx, cy).buffer(rx, quad_segs=16)
-    return scale(Point(cx, cy).buffer(1.0, quad_segs=16), rx, ry, origin=(cx, cy))
+        polygon = Point(cx, cy).buffer(rx, quad_segs=16)
+    else:
+        polygon = scale(Point(cx, cy).buffer(1.0, quad_segs=16), rx, ry, origin=(cx, cy))
+    rotation = element_rotation(element)
+    return rotate(polygon, rotation[0], origin=rotation[1:]) if rotation else polygon
 
 
 def buffer_points(points, distance, quad_segs=16):
