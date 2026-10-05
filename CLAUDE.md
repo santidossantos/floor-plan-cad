@@ -24,7 +24,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 - En `CURRENT-PLAN.md`, presentar los pasos como una lista bajo un título `Pasos`, con `[x]` (hecho) o `[ ]` (pendiente) y una línea por paso. Si la tarea crea o modifica un script, el último paso del plan es siempre `[ ] Aprobación del script resultante por el usuario.`
 
 ## Convenciones
-- **Reproducibilidad:** versiones fijas de `ultralytics` y `sahi` en `requirements.txt`. Fijar esas versiones al utilizar las librerías en cualquier script o jupyter notebook; semilla aleatoria fija en los `.py`.
+- **Reproducibilidad:** usar las versiones de `ultralytics` y `sahi` de `docs/VERSIONES.md` al instalar esas librerías en cualquier script o jupyter notebook; semilla aleatoria fija en los `.py`.
 - **Código:** simple y estructurado, sin complejidad innecesaria. Comentarios en español.
 - **Notebooks:** un título principal; primera celda de código `!nvidia-smi`; cada celda de código precedida por una celda markdown de una línea que describa lo que hace.
 - **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa. Los `.md` de `docs/` se nombran en mayúsculas (p. ej. `docs/NORMALIZACION.md`).
@@ -37,4 +37,5 @@ model-training/         # notebook de entrenamiento del modelo de segmentación
 runs/                   # resultados de los entrenamientos
 tasks/                  # tasks.json, PROGRESS.md y CURRENT-PLAN.md (solo durante una tarea)
 docs/                   # mapeo de clases y hallazgos
+docs/VERSIONES.md       # versiones de ultralytics y sahi
 ```

@@ -83,14 +83,14 @@
   {
     "id": "versiones-fijas",
     "categoria": "reproducibilidad",
-    "descripcion": "Fijar versiones de ultralytics y sahi en requirements.txt y quitar uv de las dependencias",
+    "descripcion": "Definir versiones de ultralytics y sahi en un documento .md que posteriormente será utilizado cuando para cualquier script de jupyter lab que use dichas librerias  y quitar uv de las dependencias",
     "pasos": [
       "Confirmar con el usuario las versiones a usar",
-      "Actualizar requirements.txt con versiones exactas (==)"
+      "Persistir en documento versiones exactas (==)"
     ],
-    "verificacion": "pip install -r requirements.txt funciona en un .venv limpio",
+    "verificacion": "Verificar que el documento existe y muestra las versiones de cada libreria y está referenciado en CLAUDE.md en la seccion de Estructura",
     "requiere_servidor": false,
-    "status": "not started"
+    "status": "in progress"
   },
   {
     "id": "mapeo-clases",
