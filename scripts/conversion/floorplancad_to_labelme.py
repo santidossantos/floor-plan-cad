@@ -17,10 +17,13 @@ import os
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
+import numpy as np
+import shapely
 from PIL import Image
 from shapely.affinity import scale
-from shapely.geometry import LineString, MultiPoint, Point, Polygon, box
-from shapely.ops import unary_union
+from shapely.geometry import LineString, MultiLineString, MultiPoint, Point, Polygon, box
+from shapely.ops import polygonize, split, unary_union
+from shapely.prepared import prep
 from svg.path import parse_path
 
 
@@ -68,8 +71,6 @@ SEMANTIC_IDS = {
 
 # Capas de Inkscape que identifican una clase cuando falta el semantic-id
 INKSCAPE_LABEL_FALLBACK = {
-    "墙体": "wall",
-    "WALL": "wall",
     "楼梯": "stair",
     "J-家具": "table",
     "A-楼电梯-电梯": "elevator",
@@ -78,6 +79,11 @@ INKSCAPE_LABEL_FALLBACK = {
 # Los trazos finos antialiasados casi nunca llegan a alfa 255 y quedarían gris
 # claro. Amplificar el alfa los lleva a casi negro sin perder el borde suave.
 INK_GAIN = 4
+
+# Espesor de pared cuando no se puede estimar, y tolerancia para unir trazos
+# que casi se tocan (imprecisiones del dibujo de ~0.004 unidades)
+DEFAULT_WALL_THICKNESS = 2.0
+WALL_SNAP_TOLERANCE = 0.02
 
 
 # ============================================================================
@@ -367,6 +373,187 @@ def envelope_shape(points):
 
 
 # ============================================================================
+# Paredes: relleno entre caras y cortes en los encuentros (ver docs/PAREDES.md)
+# ============================================================================
+def wall_line(element):
+    """Línea de un path de pared, sin puntos repetidos ni intermedios colineales."""
+    pts = extract_points(element)
+    pts = [p for i, p in enumerate(pts) if i == 0 or p != pts[i - 1]]
+    return LineString(pts).simplify(1e-6) if len(pts) >= 2 else None
+
+
+def estimate_wall_thickness(lines):
+    """Espesor de pared del plano.
+
+    Para cada segmento se mide la distancia a la cara paralela más cercana,
+    entre 0.5 y 6 (así se ignoran las caras dibujadas con varias líneas). El
+    espesor es la mayor de esas distancias que cubre al menos el 5 % de la
+    longitud de pared.
+    """
+    segs = [line.coords for line in lines if len(line.coords) == 2]
+    if len(segs) < 2:
+        return DEFAULT_WALL_THICKNESS
+    a = np.array([s[0] for s in segs])
+    b = np.array([s[1] for s in segs])
+    length = np.linalg.norm(b - a, axis=1)
+    keep = length > 1e-6
+    a, b, length = a[keep], b[keep], length[keep]
+    u = (b - a) / length[:, None]
+    n = np.stack([-u[:, 1], u[:, 0]], axis=1)
+    to_a, to_b = a[None] - a[:, None], b[None] - a[:, None]
+    dist = np.abs(np.einsum("ik,ijk->ij", n, to_a))
+    t0, t1 = np.einsum("ik,ijk->ij", u, to_a), np.einsum("ik,ijk->ij", u, to_b)
+    overlap = (np.minimum(length[:, None], np.maximum(t0, t1))
+               - np.maximum(0, np.minimum(t0, t1)))
+    valid = ((np.abs(u @ u.T) > 0.999) & (dist > 0.5) & (dist <= 6)
+             & (overlap > 0.2 * np.minimum(length[:, None], length[None])))
+    nearest = np.where(valid, dist, np.inf).min(axis=1)
+    found = np.isfinite(nearest)
+    if found.sum() < 3:
+        return DEFAULT_WALL_THICKNESS
+    bins, idx = np.unique(np.round(nearest[found], 1), return_inverse=True)
+    weight = np.bincount(idx, weights=length[found])
+    return float(max(bins[weight >= 0.05 * weight.sum()]))
+
+
+def line_ends(line):
+    """Extremos de la línea, cada uno con su dirección hacia afuera."""
+    c = line.coords
+    for end, prev in ((c[0], c[1]), (c[-1], c[-2])):
+        p = np.array(end)
+        u = p - np.array(prev)
+        yield p, u / np.linalg.norm(u)
+
+
+def end_caps(lines, tree, t):
+    """Cierres virtuales entre extremos libres de caras cercanas (pared abierta)."""
+    ends = [(i, p, u) for i, line in enumerate(lines) for p, u in line_ends(line)
+            if all(j == i for j in tree.query(Point(p), predicate="dwithin", distance=1e-3 * t))]
+    caps = []
+    for i, p, u in ends:
+        best = None
+        for j, q, _ in ends:
+            d = np.linalg.norm(q - p)
+            if j != i and 1e-6 < d <= 1.2 * t and abs((q - p) @ u) / d < 0.75:
+                if best is None or d < best[0]:
+                    best = (d, q)
+        if best is not None:
+            caps.append(LineString([p, best[1]]))
+    return caps
+
+
+def is_thin(face, t):
+    """Indica si la cara es angosta en su mayor parte (no entra un círculo de radio 0.6 t)."""
+    fat = face.buffer(-0.6 * t, quad_segs=4)
+    return fat.is_empty or fat.buffer(0.6 * t, quad_segs=4).area < 0.5 * face.area
+
+
+def wall_region(lines, tree, border, t):
+    """Une las caras angostas que encierran las líneas de pared.
+
+    Las caras se arman con las líneas, los cierres virtuales y el borde del
+    plano (la mayoría de los planos son recortes y las paredes llegan al borde).
+    """
+    outline = MultiLineString(lines + end_caps(lines, tree, t) + [border.exterior])
+    noded = shapely.unary_union(shapely.snap(outline, outline, WALL_SNAP_TOLERANCE),
+                                grid_size=1e-4)
+    return unary_union([face for face in polygonize(geometry_parts(noded)) if is_thin(face, t)])
+
+
+def is_through_face(q, rings, t):
+    """Indica si el borde de la pared sigue recto a ambos lados de q (cara pasante de una T)."""
+    point = Point(q)
+    ring = min(rings, key=lambda r: r.distance(point))
+    if ring.distance(point) > 0.02 * t or ring.length < 3 * t:
+        return False
+    d0, s = ring.project(point), 1.5 * t
+    a = np.array(ring.interpolate((d0 + s) % ring.length).coords[0]) - q
+    b = np.array(ring.interpolate((d0 - s) % ring.length).coords[0]) - q
+    straight = abs(a[0] * b[1] - a[1] * b[0]) < 0.05 * t * s and a @ b < 0
+    return straight and min(np.linalg.norm(a), np.linalg.norm(b)) > 0.98 * s
+
+
+def cut_candidates(lines, region, t):
+    """Segmentos que podrían separar dos paredes.
+
+    Son las prolongaciones de cada línea más allá de sus extremos y los tramos
+    de línea que quedan dentro de la región (p. ej. la boca dibujada de una T).
+    """
+    for line in lines:
+        for p, u in line_ends(line):
+            ext = LineString([p, p + 2.2 * t * u])
+            for part in geometry_parts(ext.intersection(region)):
+                if (part.geom_type == "LineString" and not part.is_empty
+                        and Point(p).distance(Point(part.coords[0])) <= 1e-3 * t):
+                    yield part
+    rim = region.boundary.buffer(2e-3 * t)
+    on_rim = prep(rim)
+    for line in lines:
+        if not on_rim.contains(line):
+            for part in geometry_parts(line.difference(rim)):
+                if part.geom_type == "LineString" and not part.is_empty:
+                    yield part
+
+
+def junction_cuts(lines, region, t):
+    """Cortes en los encuentros de paredes.
+
+    Un candidato corta si atraviesa la pared (largo de hasta 2.1 t), continúa
+    en línea recta un borde de la región y no termina en medio de una cara
+    pasante: así, en una T la pared que sigue de largo no se corta.
+    """
+    inside = prep(region)
+    rings = [region.exterior] + list(region.interiors)
+    rim = prep(region.boundary.buffer(0.02 * t))
+    cuts = []
+    for part in cut_candidates(lines, region, t):
+        p, q = np.array(part.coords[0]), np.array(part.coords[-1])
+        length = np.linalg.norm(q - p)
+        if not (1e-3 * t < length <= 2.1 * t):
+            continue
+        if not inside.contains(part.interpolate(0.5, normalized=True)):
+            continue
+        u = (q - p) / length
+        if not (rim.contains(Point(p - 0.5 * t * u)) or rim.contains(Point(q + 0.5 * t * u))):
+            continue
+        if is_through_face(p, rings, t) or is_through_face(q, rings, t):
+            continue
+        cuts.append(shapely.snap(LineString([p, q]), region.boundary, 5e-3 * t))
+    return cuts
+
+
+def is_junction_piece(piece, t):
+    """Pieza del tamaño de un encuentro: lado mayor <= 1.6 t y área < 1.25 t²."""
+    xs, ys = piece.minimum_rotated_rectangle.exterior.coords.xy
+    sides = [math.hypot(xs[j + 1] - xs[j], ys[j + 1] - ys[j]) for j in range(2)]
+    return max(sides) <= 1.6 * t and piece.area < 1.25 * t * t
+
+
+def merge_junctions(pieces, t):
+    """Une cada encuentro (pieza chica) a la pieza vecina de mayor área."""
+    tree = shapely.STRtree(pieces)
+    parent = list(range(len(pieces)))
+
+    def root(i):
+        while parent[i] != i:
+            i = parent[i]
+        return i
+
+    for i in sorted(range(len(pieces)), key=lambda i: pieces[i].area):
+        if not is_junction_piece(pieces[i], t):
+            continue
+        neighbors = [j for j in tree.query(pieces[i], predicate="intersects")
+                     if j != i and pieces[i].intersection(pieces[j]).length > 1e-6]
+        if neighbors:
+            parent[root(i)] = root(max(neighbors, key=lambda j: pieces[j].area))
+
+    groups = defaultdict(list)
+    for i, piece in enumerate(pieces):
+        groups[root(i)].append(piece)
+    return [unary_union(group) for group in groups.values()]
+
+
+# ============================================================================
 # Detectores
 # ============================================================================
 def group_by_instance_id(elements):
@@ -557,24 +744,46 @@ class BandClusterDetector(SymbolDetector):
         return polygons
 
 
-class MergedUnionDetector(SymbolDetector):
-    """Une todos los elementos de la clase en polígonos sin agujeros.
+class WallDetector(SymbolDetector):
+    """Un polígono por pared, con el criterio de "pared pasante".
 
-    Se usa para muros: los segmentos que se tocan se funden en muros continuos
-    con unary_union. Los muros unidos suelen encerrar habitaciones como anillos
-    interiores; split_holes evita que el anillo exterior exportado las rellene.
+    Las paredes se dibujan como sus dos caras más los cierres. Se rellena el
+    área angosta entre las caras y se corta en los encuentros prolongando las
+    caras: en una T la pared que sigue de largo queda entera y la que llega
+    termina en su cara; en una L la esquina queda en la pared de mayor área.
     """
 
-    LINE_BUFFER = 0.5
-    # Los muros son bandas finas (~1 unidad de ancho), así que toleran menos
-    # simplificación que las bandas más anchas de curtwall y railing.
-    SIMPLIFY_TOLERANCE = 0.1
+    SIMPLIFY_TOLERANCE = 0.05
+
+    def __init__(self, label, selection, border):
+        super().__init__(label, selection)
+        self.border = border
 
     def build_polygons(self, selected):
-        geometries = [element_geometry(element, self.LINE_BUFFER) for element in selected]
+        lines = [line for line in (wall_line(e) for e in selected if e["type"] == "path")
+                 if line is not None]
+        if not lines:
+            return []
+        t = estimate_wall_thickness(lines)
+        tree = shapely.STRtree(lines)
+        solids = [s for s in (element_to_polygon(e) for e in selected if e["type"] != "path")
+                  if is_valid_polygon(s)]
+        region = unary_union([wall_region(lines, tree, self.border, t)] + solids)
+
+        pieces = []
+        for poly in iter_polygons(region):
+            near = [lines[i] for i in tree.query(poly, predicate="dwithin", distance=1e-2 * t)]
+            cuts = junction_cuts(near, poly, t)
+            parts = geometry_parts(split(poly, MultiLineString(cuts))) if cuts else [poly]
+            pieces.extend(part for part in parts if is_valid_polygon(part))
+        if not pieces:
+            return []
+
         polygons = []
-        for merged_polygon in union_polygons(geometries):
-            polygons.extend(simplify_and_split(merged_polygon, self.SIMPLIFY_TOLERANCE))
+        for wall in merge_junctions(pieces, t):
+            for part in iter_polygons(wall):
+                if part.area >= 0.1 * t * t:
+                    polygons.extend(simplify_and_split(part, self.SIMPLIFY_TOLERANCE))
         return polygons
 
 
@@ -599,8 +808,8 @@ class ClusterBBoxDetector(SymbolDetector):
         return [cluster.envelope for cluster in union_polygons(geometries)]
 
 
-def build_detectors():
-    """Arma el detector de cada clase del dataset.
+def build_detectors(border):
+    """Arma el detector de cada clase del dataset para un plano de borde `border`.
 
     El orden define el orden de las formas en el JSON de salida.
     """
@@ -617,10 +826,7 @@ def build_detectors():
         InstanceGroupDetector("blind_window", SemanticIdSelection("blind_window")),
         InstanceGroupDetector("opening_symbol", SemanticIdSelection("opening_symbol")),
         BandClusterDetector("curtwall", SemanticIdSelection("curtwall"), line_buffer=1.5),
-        MergedUnionDetector("wall", CompositeSelection([
-            SemanticIdSelection("wall"),
-            InkscapeLabelSelection("wall"),
-        ])),
+        WallDetector("wall", SemanticIdSelection("wall"), border),
         InstanceGroupDetector("table", CompositeSelection([
             SemanticIdSelection("table"),
             InkscapeLabelSelection("table", only_unlabeled=False),
@@ -715,7 +921,6 @@ def process_files(input_dir, output_dir):
             for f in os.listdir(input_dir) if f.lower().endswith(".png")}
 
     os.makedirs(output_dir, exist_ok=True)
-    detectors = build_detectors()
 
     for name, svg_path in svgs.items():
         if name not in pngs:
@@ -725,7 +930,7 @@ def process_files(input_dir, output_dir):
         vb_w, vb_h, elements = parse_svg(svg_path)
 
         detections = [detection
-                      for detector in detectors
+                      for detector in build_detectors(box(0, 0, vb_w, vb_h))
                       for detection in detector.detect(elements)]
 
         shapes = [
