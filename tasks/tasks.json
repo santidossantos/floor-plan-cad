@@ -90,7 +90,20 @@
     ],
     "verificacion": "Verificar que el documento existe y muestra las versiones de cada libreria y está referenciado en CLAUDE.md en la seccion de Estructura",
     "requiere_servidor": false,
-    "status": "in progress"
+    "status": "done"
+  },
+  {
+    "id": "notebook-entrenamiento",
+    "categoria": "entrenamiento",
+    "descripcion": "Notebook en trainings/ que entrena YOLO26 sobre FloorPlanCAD con imgsz=720 y batch=4",
+    "pasos": [
+      "Crear el notebook respetando el formato de CLAUDE.md",
+      "Incluir las augmentations aprobadas y semilla fija",
+      "Testear localmente solo con un subconjunto de datos"
+    ],
+    "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
+    "requiere_servidor": true,
+    "status": "not started"
   },
   {
     "id": "mapeo-clases",
@@ -116,19 +129,6 @@
     ],
     "verificacion": "Propuesta aprobada por el usuario",
     "requiere_servidor": false,
-    "status": "not started"
-  },
-  {
-    "id": "notebook-entrenamiento",
-    "categoria": "entrenamiento",
-    "descripcion": "Notebook en trainings/ que entrena YOLO26 sobre FloorPlanCAD con imgsz=720 y batch=4",
-    "pasos": [
-      "Crear el notebook respetando el formato de CLAUDE.md",
-      "Incluir las augmentations aprobadas y semilla fija",
-      "Testear localmente solo con un subconjunto de datos"
-    ],
-    "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
-    "requiere_servidor": true,
     "status": "not started"
   },
   {

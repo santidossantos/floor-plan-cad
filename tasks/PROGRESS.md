@@ -8,3 +8,4 @@
 | 2026-10-05 | svg-paredes | wall: un polígono por pared ("pared pasante"), relleno entre caras y cortes en los encuentros; solo semantic-id 1. Decisión en `docs/PAREDES.md`. | 110 planos: 2 329 → 1 015 paredes, demás clases idénticas. ~0.09 s por plano. |
 | 2026-10-05 | svg-elipses-rotadas | Se aplica el `rotate(a, cx, cy)` de las elipses al muestrear puntos y al armar polígonos. | 80 planos: cambian 54 de 243 sink y 1 de 71 table; el resto, idéntico. |
 | 2026-10-05 | labelme-simplificar | Semilla local en `split_dataset`; error si falta una carpeta de `--dataset` o si `--output` no está vacía; comentarios en español. | El único uso de aleatoriedad es el shuffle del split. Dos ejecuciones dan archivos idénticos, también a la versión anterior. |
+| 2026-10-05 | versiones-fijas | `docs/VERSIONES.md` con ultralytics==8.4.173 y sahi==0.12.8, referenciado en `CLAUDE.md`. Se quitó `uv` de `requirements.txt`. | Ambas son Python puro (≥3.8); la serie 8.4 incluye YOLO26. |

@@ -2,6 +2,5 @@ svg.path
 shapely
 Pillow
 numpy
-uv
 PyYAML
 labelme==7.8.0
