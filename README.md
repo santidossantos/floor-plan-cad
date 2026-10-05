@@ -2,11 +2,6 @@
 
 Pipeline para convertir los planos de **FloorPlanCAD** (SVG) en un dataset de segmentación YOLO.
 
-```
-SVG + PNG ──▶ LabelMe JSON ──▶ YOLO-seg
-          svg_to_json     labelme_to_yolo
-```
-
 ## 📦 Instalación
 
 ```bash
@@ -22,7 +17,7 @@ Coloca los datasets en `datasets/` (ignorado por git):
 ```
 datasets/
 └── FloorPlanCAD/
-    ├── train-00/   # pares .svg + .png
+    ├── train-00/
     ├── train-01/
     └── test-00/
 ```
@@ -49,17 +44,4 @@ Junta las carpetas y las divide en train/val/test (80/10/10).
 python scripts/conversion/labelme_to_yolo.py \
   --dataset datasets/labeled/train-00 datasets/labeled/train-01 datasets/labeled/test-00 \
   --output  datasets/yolo
-```
-
-> Opcional: `--val-frac 0.1 --test-frac 0.1`
-
-✅ El dataset final queda en `datasets/yolo/`.
-
-## 🗂️ Estructura
-
-```
-scripts/
-└── conversion/
-    ├── svg_to_json.py
-    └── labelme_to_yolo.py
 ```
