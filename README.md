@@ -36,17 +36,17 @@ python scripts/conversion/floorplancad_to_labelme.py \
 
 ### 2. LabelMe → YOLO-seg
 
-Junta las carpetas y las divide en train/val/test (80/10/10).
+Junta las carpetas y las divide al azar en train/val/test (80/10/10). La carpeta de `--output` debe estar vacía o no existir.
 
 ```bash
 python scripts/conversion/floorplancad_labeled_to_yolo.py \
-  --dataset datasets/floor-plan-cad-labelme/train-00 datasets/floor-plan-cad-labelme/train-01 datasets/floor-plan-cad-labelme/test-00 \
-  --output  datasets/floor-plan-cad-yolo
+  --input  datasets/floor-plan-cad-labelme/train-00 datasets/floor-plan-cad-labelme/train-01 datasets/floor-plan-cad-labelme/test-00 \
+  --output datasets/floor-plan-cad-yolo
 ```
 
 ## 🔍 Ver anotaciones con LabelMe
 
-[LabelMe](https://github.com/wkentaro/labelme) abre una carpeta y carga el JSON de cada imagen que tenga el mismo nombre. Se instala con `requirements.txt` y se corre desde el virtual env. En Linux hay que exportar `QT_QPA_PLATFORM=wayland` antes de abrirlo (`xcb` falla si no está instalada `libxcb-cursor0`):
+[LabelMe](https://github.com/wkentaro/labelme) abre una carpeta y carga el JSON de cada imagen que tenga el mismo nombre.Se ejecuta desde el virtual env. En Linux hay que exportar `QT_QPA_PLATFORM=wayland`.
 
 ```bash
 export QT_QPA_PLATFORM=wayland

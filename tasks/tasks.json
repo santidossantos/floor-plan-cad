@@ -93,6 +93,22 @@
     "status": "done"
   },
   {
+    "id": "convert-to-yolo",
+    "categoria": "scripts",
+    "descripcion": "Chequear si el script scripts/conversion/floorplancad_labeled_to_yolo.py es correcto, actualizar README.md con los cambios finales del pipeline hasta el dataset YOLO",
+    "pasos": [
+      "Revisar comandos y argumentos del script",
+      "Fijarse si cumple con el split del dataset propuesto",
+      "Chequear posibles bugs o errores",
+      "Fijarse que elimine duplicated labels",
+      "Proponer mejoras de codigo o simplificaciones",
+      "Actualizar los pasos del README, en orden"
+    ],
+    "verificacion": "Los comandos del README coinciden con los argumentos actuales de los scripts",
+    "requiere_servidor": false,
+    "status": "in progress"
+  },
+  {
     "id": "notebook-entrenamiento",
     "categoria": "entrenamiento",
     "descripcion": "Notebook en scripts/model-training/ que entrena YOLO26 sobre FloorPlanCAD con imgsz=720 y batch=4",
@@ -105,7 +121,19 @@
     ],
     "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "paused"
+  },
+  {
+    "id": "augmentations-propuesta",
+    "categoria": "entrenamiento",
+    "descripcion": "Proponer las augmentations necesarias para transferir de planos sintéticos a analógicos",
+    "pasos": [
+      "Proponer augmentations (ruido, manchas, desgaste, variación de tono) con justificación",
+      "Documentar en docs/"
+    ],
+    "verificacion": "Propuesta aprobada por el usuario",
+    "requiere_servidor": false,
+    "status": "not started"
   },
   {
     "id": "mapeo-clases",
@@ -122,18 +150,6 @@
     "status": "not started"
   },
   {
-    "id": "augmentations-propuesta",
-    "categoria": "entrenamiento",
-    "descripcion": "Proponer las augmentations necesarias para transferir de planos sintéticos a analógicos",
-    "pasos": [
-      "Proponer augmentations (ruido, manchas, desgaste, variación de tono) con justificación",
-      "Documentar en docs/"
-    ],
-    "verificacion": "Propuesta aprobada por el usuario",
-    "requiere_servidor": false,
-    "status": "not started"
-  },
-  {
     "id": "evaluacion-sahi",
     "categoria": "evaluacion",
     "descripcion": "Script en scripts/evaluation/ que hace inferencia por tiles con SAHI sobre BLD-AR y calcula métricas",
@@ -144,18 +160,6 @@
     ],
     "verificacion": "El usuario confirma que la evaluación corrió en el servidor",
     "requiere_servidor": true,
-    "status": "not started"
-  },
-  {
-    "id": "readme-actualizar",
-    "categoria": "documentacion",
-    "descripcion": "Actualizar README.md con los cambios finales del pipeline hasta el dataset YOLO",
-    "pasos": [
-      "Revisar comandos y argumentos de cada script",
-      "Actualizar los pasos del README"
-    ],
-    "verificacion": "Los comandos del README coinciden con los argumentos actuales de los scripts",
-    "requiere_servidor": false,
     "status": "not started"
   }
 ]

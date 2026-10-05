@@ -1,6 +1,6 @@
 """Convierte carpetas anotadas en LabelMe en un dataset YOLO-seg.
 
-Todas las carpetas de --dataset se juntan y se dividen al azar en
+Todas las carpetas de --input se juntan y se dividen al azar en
 train/val/test (80/10/10 por defecto). Los archivos se prefijan con el nombre
 de su carpeta para evitar choques entre planos con el mismo nombre.
 """
@@ -11,20 +11,29 @@ import os
 import random
 import shutil
 
+import shapely
 import yaml
+from shapely.geometry import Polygon, box
 
 RANDOM_SEED = 42
 
 VAL_FRACTION = 0.1
 TEST_FRACTION = 0.1
 
+# El id de cada clase es su posición en la lista, sin importar qué clases traiga la entrada
+CLASSES = [
+    "TV_cabinet", "airconditioner", "bath", "bath_tub", "bay_window", "bed",
+    "bedside_cupboard", "blind_window", "chair", "curtwall", "double_door",
+    "elevator", "escalator", "gas_stove", "opening_symbol", "railing",
+    "refrigerator", "single_door", "sink", "sliding_door", "sofa",
+    "squat_toilet", "stair", "table", "toilet", "urinal", "wall", "wardrobe",
+    "washing_machine", "window",
+]
+CLASS_IDS = {label: i for i, label in enumerate(CLASSES)}
+
 EXCLUDED_CLASSES = {"fire_door", "wall_move", "revolving_door", "parking", "cinema_chair"}
 
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
-
-# Ultralytics descarta los segmentos iguales tras redondear a 5 decimales;
-# deduplicar con la misma clave evita sus avisos durante el entrenamiento.
-DEDUP_DECIMALS = 5
 
 
 # ----------------------------------------------------------------------------
@@ -40,57 +49,40 @@ def load_labelme_json(json_path):
         return json.load(f)
 
 
-def build_class_map(folders):
-    """Recorre todas las anotaciones y asigna un id a cada clase no excluida."""
-    classes = set()
-    for folder in folders:
-        for base in list_annotation_bases(folder):
-            data = load_labelme_json(os.path.join(folder, base + ".json"))
-            for shape in data.get("shapes", []):
-                if shape["label"] not in EXCLUDED_CLASSES:
-                    classes.add(shape["label"])
-    return {label: i for i, label in enumerate(sorted(classes))}
-
-
 # ----------------------------------------------------------------------------
 # Conversión de anotaciones
 # ----------------------------------------------------------------------------
+def clip_to_image(points, width, height):
+    """Recorta el polígono al borde de la imagen; puede quedar en varias partes."""
+    if all(0 <= x <= width and 0 <= y <= height for x, y in points):
+        return [points]
+    clipped = shapely.make_valid(Polygon(points)).intersection(box(0, 0, width, height))
+    return [list(part.exterior.coords) for part in shapely.get_parts(clipped)
+            if part.geom_type == "Polygon"]
+
+
 def normalize_polygon(points, width, height):
     """Convierte puntos absolutos en coordenadas YOLO-seg normalizadas."""
-    normalized = []
-    for x, y in points:
-        normalized.extend([
-            max(0.0, min(1.0, x / width)),
-            max(0.0, min(1.0, y / height)),
-        ])
-    return normalized
+    return [v for x, y in points for v in (x / width, y / height)]
 
 
-def dedup_key(line):
-    """Clave que considera iguales dos líneas de etiqueta tras redondear las coordenadas."""
-    class_id, *coords = line.split()
-    return " ".join([class_id] + [f"{round(float(v), DEDUP_DECIMALS)}" for v in coords])
-
-
-def convert_annotation(json_path, label_path, class_map):
+def convert_annotation(json_path, label_path):
     """Escribe un JSON LabelMe como .txt YOLO-seg, sin formas duplicadas."""
     data = load_labelme_json(json_path)
     width, height = data["imageWidth"], data["imageHeight"]
 
-    lines, seen = [], set()
+    lines = []
     for shape in data.get("shapes", []):
         if shape["label"] in EXCLUDED_CLASSES:
             continue
-        class_id = class_map[shape["label"]]
-        coords = normalize_polygon(shape["points"], width, height)
-        line = f"{class_id} " + " ".join(f"{p:.6f}" for p in coords)
-        key = dedup_key(line)
-        if key not in seen:
-            seen.add(key)
-            lines.append(line)
+        class_id = CLASS_IDS[shape["label"]]
+        for points in clip_to_image(shape["points"], width, height):
+            coords = normalize_polygon(points, width, height)
+            lines.append(f"{class_id} " + " ".join(f"{p:.6f}" for p in coords))
 
+    # Ultralytics descarta con un aviso los polígonos repetidos (misma línea)
     with open(label_path, "w") as f:
-        f.write("\n".join(lines))
+        f.write("\n".join(dict.fromkeys(lines)))
 
 
 # ----------------------------------------------------------------------------
@@ -105,7 +97,7 @@ def find_image(folder, base):
     return None
 
 
-def export_sample(folder, base, split_name, output_folder, class_map):
+def export_sample(folder, base, split_name, output_folder):
     """Exporta un par anotación+imagen a un split del dataset.
 
     El nombre de salida lleva como prefijo el nombre de la carpeta de origen,
@@ -114,12 +106,11 @@ def export_sample(folder, base, split_name, output_folder, class_map):
     out_base = f"{os.path.basename(os.path.normpath(folder))}_{base}"
 
     label_path = os.path.join(output_folder, "labels", split_name, out_base + ".txt")
-    convert_annotation(os.path.join(folder, base + ".json"), label_path, class_map)
+    convert_annotation(os.path.join(folder, base + ".json"), label_path)
 
     image_path = find_image(folder, base)
-    if image_path:
-        ext = os.path.splitext(image_path)[1]
-        shutil.copy(image_path, os.path.join(output_folder, "images", split_name, out_base + ext))
+    ext = os.path.splitext(image_path)[1]
+    shutil.copy(image_path, os.path.join(output_folder, "images", split_name, out_base + ext))
 
 
 # ----------------------------------------------------------------------------
@@ -127,9 +118,6 @@ def export_sample(folder, base, split_name, output_folder, class_map):
 # ----------------------------------------------------------------------------
 def split_dataset(items, val_fraction, test_fraction):
     """Divide los planos al azar en train/val/test según las fracciones dadas."""
-    if val_fraction + test_fraction >= 1.0:
-        raise ValueError("--val-frac + --test-frac must be smaller than 1.0")
-
     # Semilla propia: el split no depende del estado global de random
     items = sorted(items)
     random.Random(RANDOM_SEED).shuffle(items)
@@ -146,14 +134,14 @@ def split_dataset(items, val_fraction, test_fraction):
 # ----------------------------------------------------------------------------
 # YAML del dataset
 # ----------------------------------------------------------------------------
-def write_dataset_yaml(output_folder, class_map, has_test):
+def write_dataset_yaml(output_folder, has_test):
     yaml_data = {
         "train": "images/train",
         "val": "images/val",
     }
     if has_test:
         yaml_data["test"] = "images/test"
-    yaml_data["names"] = {class_id: label for label, class_id in class_map.items()}
+    yaml_data["names"] = dict(enumerate(CLASSES))
 
     # Ultralytics HUB exige que el YAML se llame como su carpeta
     folder_name = os.path.basename(os.path.normpath(output_folder))
@@ -167,26 +155,29 @@ def write_dataset_yaml(output_folder, class_map, has_test):
 # ----------------------------------------------------------------------------
 # Pipeline
 # ----------------------------------------------------------------------------
-def build_yolo_dataset(dataset_folders, output_folder, val_fraction, test_fraction):
-    missing = [folder for folder in dataset_folders if not os.path.isdir(folder)]
+def build_yolo_dataset(input_folders, output_folder, val_fraction, test_fraction):
+    # Se valida antes de escribir, para no dejar --output a medio generar
+    if val_fraction + test_fraction >= 1.0:
+        raise ValueError("--val-frac + --test-frac debe ser menor que 1.0")
+    missing = [folder for folder in input_folders if not os.path.isdir(folder)]
     if missing:
-        raise ValueError(f"No existen las carpetas de --dataset: {missing}")
+        raise ValueError(f"No existen las carpetas de --input: {missing}")
     # Una carpeta ya usada mezclaría archivos de corridas anteriores
     if os.path.isdir(output_folder) and os.listdir(output_folder):
         raise ValueError(f"--output debe estar vacía: {output_folder}")
+
+    items = [(folder, base)
+             for folder in input_folders
+             for base in list_annotation_bases(folder)]
+    without_image = [os.path.join(folder, base + ".json")
+                     for folder, base in items if find_image(folder, base) is None]
+    if without_image:
+        raise ValueError(f"JSON sin imagen: {without_image}")
 
     for split_name in ("train", "val", "test"):
         os.makedirs(os.path.join(output_folder, "images", split_name), exist_ok=True)
         os.makedirs(os.path.join(output_folder, "labels", split_name), exist_ok=True)
 
-    class_map = build_class_map(dataset_folders)
-    print("\n📌 Detected classes:")
-    for label, class_id in class_map.items():
-        print(f"   {class_id}: {label}")
-
-    items = [(folder, base)
-             for folder in dataset_folders
-             for base in list_annotation_bases(folder)]
     train_set, val_set, test_set = split_dataset(items, val_fraction, test_fraction)
 
     print(f"\n📂 Split ({len(items)} drawings):")
@@ -195,15 +186,15 @@ def build_yolo_dataset(dataset_folders, output_folder, val_fraction, test_fracti
 
     for split, split_name in [(train_set, "train"), (val_set, "val"), (test_set, "test")]:
         for folder, base in split:
-            export_sample(folder, base, split_name, output_folder, class_map)
+            export_sample(folder, base, split_name, output_folder)
 
-    write_dataset_yaml(output_folder, class_map, has_test=len(test_set) > 0)
+    write_dataset_yaml(output_folder, has_test=len(test_set) > 0)
     print("\n✔ YOLO dataset generated")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Convert LabelMe folders to a YOLO-seg dataset")
-    parser.add_argument("--dataset", nargs="+", required=True,
+    parser.add_argument("--input", nargs="+", required=True,
                         help="LabelMe folders to pool and split (e.g. floor-plan-cad-labelme/train-00 "
                              "floor-plan-cad-labelme/train-01 floor-plan-cad-labelme/test-00)")
     parser.add_argument("--output", required=True, help="Output folder for the YOLO dataset")
@@ -213,7 +204,7 @@ def main():
                         help=f"Fraction of drawings for test (default: {TEST_FRACTION})")
     args = parser.parse_args()
 
-    build_yolo_dataset(args.dataset, args.output, args.val_frac, args.test_frac)
+    build_yolo_dataset(args.input, args.output, args.val_frac, args.test_frac)
 
 
 if __name__ == "__main__":
