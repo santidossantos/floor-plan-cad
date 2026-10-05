@@ -9,29 +9,32 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 
 `datasets/` está ignorada por git.
 
-## Protocolo de sesión
-1. Al iniciar: leer `tasks/progress.md`, `tasks/tasks.json` y `git log --oneline -10`.
-2. Tomar **una sola** tarea con `"passes": false` (respetar el orden de `tasks/plan.md`).
-3. Al terminar: poner `"passes": true`, agregar una entrada en `tasks/progress.md` y hacer commit.
-4. En `tasks.json` solo se modifica el campo `passes`. No borrar ni reescribir tareas; si hace falta una nueva, agregarla y avisar.
+## En cada sesión
+1. Al iniciar: leer `tasks/PROGRESS.md`, `tasks/tasks.json` y `git log --oneline -10`.
+2. Cuando el usuario pida implementar una tarea de `tasks.json`, crear `tasks/CURRENT-PLAN.md` con el plan de **esa** tarea. Trabajar una sola tarea por vez.
+3. Al terminar: poner `"passes": true`, eliminar `tasks/CURRENT-PLAN.md`, agregar una entrada en `tasks/PROGRESS.md` (con **Hecho:** y **Notas:**; sin **Siguiente:**, porque lo da `tasks.json`) y avisar al usuario.
+4. En `tasks.json`, nunca marcar `passes: true` sin cumplir su `verificacion`, ni borrar tareas o cambiar su `verificacion` para darlas por cumplidas. Otros cambios (pasos, tareas nuevas) se proponen al usuario antes de aplicarlos.
 
 ## Forma de trabajo
 - Pasos pequeños.
 - Ante cualquier ambigüedad, preguntar. No inferir nada sin evidencia.
-- **Nunca ejecutar localmente** scripts de entrenamiento ni de evaluación: el usuario los corre en un servidor remoto.
+- **Nunca ejecutar localmente** scripts de entrenamiento ni de evaluación: el usuario los corre en un servidor remoto. Excepción: se pueden correr con un subconjunto pequeño de datos para testear el código implementado.
+- **Nunca hacer commit ni push**: el usuario se encarga de git.
+- En `tasks/`, nombrar siempre los archivos `CURRENT-PLAN.md` (plan de la tarea en curso; solo existe mientras hay una) y `PROGRESS.md` (progreso).
 
 ## Convenciones
-- **Reproducibilidad:** versiones fijas de `ultralytics` y `sahi` en `requirements.txt`; semilla aleatoria fija en los `.py`.
+- **Reproducibilidad:** versiones fijas de `ultralytics` y `sahi` en `requirements.txt`. Fijar esas versiones al utilizar las librerías en cualquier script o jupyter notebook; semilla aleatoria fija en los `.py`.
 - **Código:** simple y estructurado, sin complejidad innecesaria. Comentarios en español.
 - **Notebooks:** un título principal; primera celda de código `!nvidia-smi`; cada celda de código precedida por una celda markdown de una línea que describa lo que hace.
-- **Documentación:** en español, mínima, en `.md` organizados por carpetas. Las decisiones van en `docs/decisiones/`.
+- **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa.
 
 ## Estructura
 ```
 scripts/conversion/     # svg_to_json.py, labelme_to_yolo.py
 scripts/preprocessing/  # normalize_dataset.py
 scripts/evaluation/     # inferencia con SAHI
-trainings/              # notebooks de entrenamiento
-tasks/                  # plan.md, tasks.json, progress.md
-docs/                   # mapeo de clases y decisiones
+model-training/         # notebook de entrenamiento del modelo de segmentación
+runs/                   # resultados de los entrenamientos
+tasks/                  # tasks.json, PROGRESS.md y CURRENT-PLAN.md (solo durante una tarea)
+docs/                   # mapeo de clases y hallazgos
 ```

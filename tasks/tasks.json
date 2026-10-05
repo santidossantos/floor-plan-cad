@@ -6,10 +6,11 @@
     "pasos": [
       "Revisar scripts/preprocessing/normalize_dataset.py y dónde se generan los PNG en svg_to_json.py",
       "Proponer al usuario: mantener, simplificar o integrar",
-      "Documentar la decisión (y el hallazgo de polaridad que cita POLARITY-FINDING.md, inexistente) en docs/decisiones/",
+      "Documentar la decisión en docs/",
+      "Eliminar del docstring la cita a POLARITY-FINDING.md (no existe en el repo)",
       "Traducir comentarios al español"
     ],
-    "verificacion": "Decisión documentada en docs/decisiones/ y script resultante aprobado por el usuario",
+    "verificacion": "Decisión documentada en docs/ y script resultante aprobado por el usuario",
     "requiere_servidor": false,
     "passes": false
   },
@@ -71,7 +72,7 @@
     "descripcion": "Proponer las augmentations necesarias para transferir de planos sintéticos a analógicos",
     "pasos": [
       "Proponer augmentations (ruido, manchas, desgaste, variación de tono) con justificación",
-      "Documentar en docs/decisiones/"
+      "Documentar en docs/"
     ],
     "verificacion": "Propuesta aprobada por el usuario",
     "requiere_servidor": false,
@@ -84,7 +85,7 @@
     "pasos": [
       "Crear el notebook respetando el formato de CLAUDE.md",
       "Incluir las augmentations aprobadas y semilla fija",
-      "No ejecutar localmente"
+      "Testear localmente solo con un subconjunto de datos"
     ],
     "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
     "requiere_servidor": true,
@@ -97,7 +98,7 @@
     "pasos": [
       "Definir con el usuario tamaño de tile, solapamiento y métricas",
       "Implementar el script aplicando el mapeo de clases",
-      "No ejecutar localmente"
+      "Testear localmente solo con un subconjunto de datos"
     ],
     "verificacion": "El usuario confirma que la evaluación corrió en el servidor",
     "requiere_servidor": true,
