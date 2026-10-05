@@ -3,8 +3,8 @@
 Pipeline para convertir los planos de **FloorPlanCAD** (SVG) en un dataset de segmentación YOLO.
 
 ```
-SVG + PNG ──▶ LabelMe JSON ──▶ YOLO-seg ──▶ YOLO-seg normalizado
-          svg_to_json     labelme_to_yolo   normalize_dataset
+SVG + PNG ──▶ LabelMe JSON ──▶ YOLO-seg
+          svg_to_json     labelme_to_yolo
 ```
 
 ## 📦 Instalación
@@ -31,7 +31,7 @@ datasets/
 
 ### 1. SVG → LabelMe
 
-Genera las anotaciones LabelMe JSON a partir de cada par SVG/PNG.
+Genera las anotaciones LabelMe JSON a partir de cada par SVG/PNG y guarda cada PNG con fondo blanco y líneas oscuras, como en los planos analógicos (ver `docs/NORMALIZACION.md`).
 
 ```bash
 for split in train-00 train-01 test-00; do
@@ -53,25 +53,13 @@ python scripts/conversion/labelme_to_yolo.py \
 
 > Opcional: `--val-frac 0.1 --test-frac 0.1`
 
-### 3. Normalización
-
-Convierte las imágenes a fondo blanco y líneas oscuras, como en los planos analógicos.
-
-```bash
-python scripts/preprocessing/normalize_dataset.py \
-  --input  datasets/yolo \
-  --output datasets/yolo-normalized
-```
-
-✅ El dataset final queda en `datasets/yolo-normalized/`.
+✅ El dataset final queda en `datasets/yolo/`.
 
 ## 🗂️ Estructura
 
 ```
 scripts/
-├── conversion/
-│   ├── svg_to_json.py
-│   └── labelme_to_yolo.py
-└── preprocessing/
-    └── normalize_dataset.py
+└── conversion/
+    ├── svg_to_json.py
+    └── labelme_to_yolo.py
 ```

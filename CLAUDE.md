@@ -12,7 +12,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 ## En cada sesión
 1. Al iniciar: leer `tasks/PROGRESS.md`, `tasks/tasks.json` y `git log --oneline -10`.
 2. Cuando el usuario pida implementar una tarea de `tasks.json`, crear `tasks/CURRENT-PLAN.md` con el plan de **esa** tarea. Trabajar una sola tarea por vez.
-3. Al terminar: poner `"passes": true`, eliminar `tasks/CURRENT-PLAN.md`, agregar una entrada en `tasks/PROGRESS.md` (con **Hecho:** y **Notas:**; sin **Siguiente:**, porque lo da `tasks.json`) y avisar al usuario.
+3. Al terminar: poner `"passes": true`, eliminar `tasks/CURRENT-PLAN.md`, agregar una fila a la tabla de `tasks/PROGRESS.md` (Fecha | Título | Hecho | Notas; cada celda de 2 o 3 renglones como máximo; sin columna Siguiente, porque lo da `tasks.json`) y avisar al usuario.
 4. En `tasks.json`, nunca marcar `passes: true` sin cumplir su `verificacion`, ni borrar tareas o cambiar su `verificacion` para darlas por cumplidas. Otros cambios (pasos, tareas nuevas) se proponen al usuario antes de aplicarlos.
 
 ## Forma de trabajo
@@ -26,12 +26,11 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 - **Reproducibilidad:** versiones fijas de `ultralytics` y `sahi` en `requirements.txt`. Fijar esas versiones al utilizar las librerías en cualquier script o jupyter notebook; semilla aleatoria fija en los `.py`.
 - **Código:** simple y estructurado, sin complejidad innecesaria. Comentarios en español.
 - **Notebooks:** un título principal; primera celda de código `!nvidia-smi`; cada celda de código precedida por una celda markdown de una línea que describa lo que hace.
-- **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa.
+- **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa. Los `.md` de `docs/` se nombran en mayúsculas (p. ej. `docs/NORMALIZACION.md`).
 
 ## Estructura
 ```
 scripts/conversion/     # svg_to_json.py, labelme_to_yolo.py
-scripts/preprocessing/  # normalize_dataset.py
 scripts/evaluation/     # inferencia con SAHI
 model-training/         # notebook de entrenamiento del modelo de segmentación
 runs/                   # resultados de los entrenamientos

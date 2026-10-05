@@ -12,7 +12,7 @@
     ],
     "verificacion": "Decisión documentada en docs/ y script resultante aprobado por el usuario",
     "requiere_servidor": false,
-    "passes": false
+    "passes": true
   },
   {
     "id": "svg-simplificar",

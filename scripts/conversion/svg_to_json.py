@@ -5,13 +5,15 @@ strategies: how elements are selected (semantic id and/or Inkscape layer
 label), how they are grouped into symbol instances (instance-id, spatial
 clustering, global union or per element), and how each group becomes a
 polygon (convex hull, bounding box or the merged geometry itself).
+
+Además, guarda cada PNG normalizado a fondo blanco y líneas oscuras, como los
+planos analógicos (ver docs/NORMALIZACION.md).
 """
 
 import argparse
 import json
 import math
 import os
-import shutil
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -87,6 +89,10 @@ INKSCAPE_LABEL_FALLBACK = {
     "J-家具": ("table", "furneture"),
     "A-楼电梯-电梯": ("elevator", "equipment"),
 }
+
+# Los trazos finos antialiasados casi nunca llegan a alfa 255 y quedarían gris
+# claro. Amplificar el alfa los lleva a casi negro sin perder el borde suave.
+INK_GAIN = 4
 
 
 # ============================================================================
@@ -826,10 +832,28 @@ def write_labelme_json(path, image_name, img_w, img_h, shapes):
 
 
 # ============================================================================
+# Normalización de imagen
+# ============================================================================
+def normalize_image(image):
+    """Devuelve una copia RGB con fondo blanco y líneas oscuras.
+
+    Los PNG de FloorPlanCAD son RGBA con fondo transparente, que en RGB se lee
+    negro. El trazo se toma del canal alfa porque no depende del color: en RGB,
+    los trazos negros se pierden sobre el fondo negro.
+    """
+    ink = image.getchannel("A").point(lambda alpha: 255 - min(alpha * INK_GAIN, 255))
+    return ink.convert("RGB")
+
+
+# ============================================================================
 # Main pipeline
 # ============================================================================
 def process_files(input_dir, output_dir):
     """Process all SVG/PNG pairs in input_dir and write LabelMe JSON to output_dir."""
+    # Guardar en la misma carpeta sobrescribiría los PNG originales
+    if os.path.abspath(input_dir) == os.path.abspath(output_dir):
+        raise ValueError("--output debe ser distinta de --input")
+
     svgs = {os.path.splitext(f)[0]: os.path.join(input_dir, f)
             for f in os.listdir(input_dir) if f.lower().endswith(".svg")}
     pngs = {os.path.splitext(f)[0]: os.path.join(input_dir, f)
@@ -858,8 +882,7 @@ def process_files(input_dir, output_dir):
         write_labelme_json(out_path, os.path.basename(pngs[name]), img_w, img_h, shapes)
 
         out_png_path = os.path.join(output_dir, os.path.basename(pngs[name]))
-        if os.path.abspath(pngs[name]) != os.path.abspath(out_png_path):
-            shutil.copy2(pngs[name], out_png_path)
+        normalize_image(Image.open(pngs[name])).save(out_png_path)
 
         print(f"{name}: {len(shapes)} shapes -> {out_path}")
 
