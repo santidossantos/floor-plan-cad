@@ -612,6 +612,16 @@ def without_stray_lines(strokes):
     return kept
 
 
+def without_small_pieces(strokes, gap, min_ratio):
+    """Quita las piezas chicas: trazos a más de 2 * gap del resto que ocupan
+    menos de `min_ratio` de la pieza mayor (p. ej. la punta de una mesada)."""
+    bands = unary_union([stroke.buffer(gap, quad_segs=4) for stroke in strokes])
+    pieces = [Polygon(part.exterior) for part in iter_polygons(bands)]
+    biggest = max(piece.area for piece in pieces)
+    kept = [piece for piece in pieces if piece.area >= min_ratio * biggest]
+    return [stroke for stroke in strokes if any(stroke.intersects(piece) for piece in kept)]
+
+
 def connected_strokes(strokes, candidates, tree, touch, growth):
     """Candidatos conectados en cadena a los trazos, sin salir de su caja agrandada en `growth`."""
     x0, y0, x1, y1 = shapely.total_bounds(strokes)
@@ -792,13 +802,14 @@ class OutlineDetector(SymbolDetector):
     """Una forma por grupo de instance-id que sigue el contorno dibujado.
 
     Se usa para sanitarios (sink, urinal, squat_toilet), donde la envolvente
-    convexa falla de tres maneras: rectas del grupo que no son el símbolo
+    convexa falla de tres maneras: trazos del grupo que no son el símbolo
     (bordes de mesada, ejes) la estiran; parte del contorno viene sin
     semantic-id, como curvas explotadas en segmentos cortos; y rellena las
-    concavidades. Por eso se quitan esas rectas, se suman los segmentos cortos
-    sin etiqueta del mismo color conectados al símbolo, y se usa la región
-    encerrada por los trazos si cubre casi toda la envolvente. Si no la cubre,
-    el símbolo está abierto (p. ej. contra la pared) y queda la envolvente.
+    concavidades. Por eso se quitan las rectas largas y las piezas chicas
+    aisladas, se suman los segmentos cortos sin etiqueta del mismo color
+    conectados al símbolo, y se usa la región encerrada por los trazos si cubre
+    casi toda la envolvente. Si no la cubre, el símbolo está abierto (p. ej.
+    contra la pared) y queda la envolvente.
     """
 
     GAP = 0.25
@@ -806,6 +817,7 @@ class OutlineDetector(SymbolDetector):
     TOUCH = 0.02
     GROWTH = 0.3
     LOOSE_MAX_LENGTH = 0.5
+    MIN_PIECE = 0.1
     MIN_FILL = 0.8
     SIMPLIFY_TOLERANCE = 0.02
 
@@ -836,6 +848,7 @@ class OutlineDetector(SymbolDetector):
             if candidates:
                 strokes += connected_strokes(strokes, candidates, shapely.STRtree(candidates),
                                              self.TOUCH, self.GROWTH)
+            strokes = without_small_pieces(strokes, self.GAP, self.MIN_PIECE)
             hull = unary_union(strokes).convex_hull
             region = enclosed_region(strokes, self.GAP, self.OPENING)
             shape = region if region is not None and region.area >= self.MIN_FILL * hull.area else hull

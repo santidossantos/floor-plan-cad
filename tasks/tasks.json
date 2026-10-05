@@ -106,7 +106,7 @@
     ],
     "verificacion": "Los comandos del README coinciden con los argumentos actuales de los scripts",
     "requiere_servidor": false,
-    "status": "in progress"
+    "status": "done"
   },
   {
     "id": "notebook-entrenamiento",

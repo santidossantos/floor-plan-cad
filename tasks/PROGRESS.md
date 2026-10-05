@@ -9,3 +9,4 @@
 | 2026-10-05 | svg-elipses-rotadas | Se aplica el `rotate(a, cx, cy)` de las elipses al muestrear puntos y al armar polígonos. | 80 planos: cambian 54 de 243 sink y 1 de 71 table; el resto, idéntico. |
 | 2026-10-05 | labelme-simplificar | Semilla local en `split_dataset`; error si falta una carpeta de `--dataset` o si `--output` no está vacía; comentarios en español. | El único uso de aleatoriedad es el shuffle del split. Dos ejecuciones dan archivos idénticos, también a la versión anterior. |
 | 2026-10-05 | versiones-fijas | Se fijan las versiones que utilizarán los Notebooks que contengan Ultralytics y/o Sahi en `docs/VERSIONES.md`
+| 2026-10-05 | convert-to-yolo | Conversor a YOLO: ids de clase fijos, polígonos recortados al borde, duplicados por línea idéntica, validación antes de escribir y `--input`. README actualizado. | Split 80/10/10 sin cambios; solo cambian las 11 591 formas que salían de la imagen. |
