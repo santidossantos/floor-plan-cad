@@ -1,8 +1,8 @@
-"""Convert LabelMe-annotated folders into a YOLO-seg dataset.
+"""Convierte carpetas anotadas en LabelMe en un dataset YOLO-seg.
 
-All --dataset folders are pooled and split randomly into train/val/test
-(80/10/10 by default). Files sharing a name across folders are prefixed with
-their folder name to avoid collisions.
+Todas las carpetas de --dataset se juntan y se dividen al azar en
+train/val/test (80/10/10 por defecto). Los archivos se prefijan con el nombre
+de su carpeta para evitar choques entre planos con el mismo nombre.
 """
 
 import argparse
@@ -22,18 +22,16 @@ EXCLUDED_CLASSES = {"fire_door", "wall_move", "revolving_door", "parking", "cine
 
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
 
-# Ultralytics drops segments that are equal after rounding to 5 decimals;
-# deduplicating with the same key avoids its training-time warnings.
+# Ultralytics descarta los segmentos iguales tras redondear a 5 decimales;
+# deduplicar con la misma clave evita sus avisos durante el entrenamiento.
 DEDUP_DECIMALS = 5
 
 
 # ----------------------------------------------------------------------------
-# Annotation discovery
+# Lectura de anotaciones
 # ----------------------------------------------------------------------------
 def list_annotation_bases(folder):
-    """Return the sorted base names of all LabelMe JSON files in a folder."""
-    if not os.path.exists(folder):
-        return []
+    """Devuelve, ordenados, los nombres base de los JSON LabelMe de una carpeta."""
     return sorted(os.path.splitext(f)[0] for f in os.listdir(folder) if f.endswith(".json"))
 
 
@@ -43,7 +41,7 @@ def load_labelme_json(json_path):
 
 
 def build_class_map(folders):
-    """Scan every annotation and map each non-excluded label to a class id."""
+    """Recorre todas las anotaciones y asigna un id a cada clase no excluida."""
     classes = set()
     for folder in folders:
         for base in list_annotation_bases(folder):
@@ -55,10 +53,10 @@ def build_class_map(folders):
 
 
 # ----------------------------------------------------------------------------
-# Annotation conversion
+# Conversión de anotaciones
 # ----------------------------------------------------------------------------
 def normalize_polygon(points, width, height):
-    """Convert absolute polygon points to normalized YOLO-seg coordinates."""
+    """Convierte puntos absolutos en coordenadas YOLO-seg normalizadas."""
     normalized = []
     for x, y in points:
         normalized.extend([
@@ -69,13 +67,13 @@ def normalize_polygon(points, width, height):
 
 
 def dedup_key(line):
-    """Key that treats two label lines as equal after coordinate rounding."""
+    """Clave que considera iguales dos líneas de etiqueta tras redondear las coordenadas."""
     class_id, *coords = line.split()
     return " ".join([class_id] + [f"{round(float(v), DEDUP_DECIMALS)}" for v in coords])
 
 
 def convert_annotation(json_path, label_path, class_map):
-    """Write one LabelMe JSON as a YOLO-seg .txt file, skipping duplicates."""
+    """Escribe un JSON LabelMe como .txt YOLO-seg, sin formas duplicadas."""
     data = load_labelme_json(json_path)
     width, height = data["imageWidth"], data["imageHeight"]
 
@@ -96,10 +94,10 @@ def convert_annotation(json_path, label_path, class_map):
 
 
 # ----------------------------------------------------------------------------
-# Sample export
+# Exportación de muestras
 # ----------------------------------------------------------------------------
 def find_image(folder, base):
-    """Return the path of the image paired with an annotation, or None."""
+    """Devuelve la ruta de la imagen de una anotación, o None."""
     for ext in IMAGE_EXTENSIONS:
         image_path = os.path.join(folder, base + ext)
         if os.path.exists(image_path):
@@ -108,10 +106,10 @@ def find_image(folder, base):
 
 
 def export_sample(folder, base, split_name, output_folder, class_map):
-    """Export one annotation+image pair into a dataset split.
+    """Exporta un par anotación+imagen a un split del dataset.
 
-    The output name is prefixed with the source folder name so that files
-    sharing a base name across folders do not overwrite each other.
+    El nombre de salida lleva como prefijo el nombre de la carpeta de origen,
+    para que los planos con el mismo nombre en distintas carpetas no se pisen.
     """
     out_base = f"{os.path.basename(os.path.normpath(folder))}_{base}"
 
@@ -125,15 +123,16 @@ def export_sample(folder, base, split_name, output_folder, class_map):
 
 
 # ----------------------------------------------------------------------------
-# Train / val / test split
+# División train / val / test
 # ----------------------------------------------------------------------------
 def split_dataset(items, val_fraction, test_fraction):
-    """Split drawings randomly into train/val/test by the given fractions."""
+    """Divide los planos al azar en train/val/test según las fracciones dadas."""
     if val_fraction + test_fraction >= 1.0:
         raise ValueError("--val-frac + --test-frac must be smaller than 1.0")
 
+    # Semilla propia: el split no depende del estado global de random
     items = sorted(items)
-    random.shuffle(items)
+    random.Random(RANDOM_SEED).shuffle(items)
 
     val_count = round(len(items) * val_fraction)
     test_count = round(len(items) * test_fraction)
@@ -145,7 +144,7 @@ def split_dataset(items, val_fraction, test_fraction):
 
 
 # ----------------------------------------------------------------------------
-# Dataset YAML
+# YAML del dataset
 # ----------------------------------------------------------------------------
 def write_dataset_yaml(output_folder, class_map, has_test):
     yaml_data = {
@@ -156,7 +155,7 @@ def write_dataset_yaml(output_folder, class_map, has_test):
         yaml_data["test"] = "images/test"
     yaml_data["names"] = {class_id: label for label, class_id in class_map.items()}
 
-    # Ultralytics HUB requires the YAML to be named after its folder.
+    # Ultralytics HUB exige que el YAML se llame como su carpeta
     folder_name = os.path.basename(os.path.normpath(output_folder))
     yaml_path = os.path.join(output_folder, f"{folder_name}.yaml")
     with open(yaml_path, "w") as f:
@@ -169,6 +168,13 @@ def write_dataset_yaml(output_folder, class_map, has_test):
 # Pipeline
 # ----------------------------------------------------------------------------
 def build_yolo_dataset(dataset_folders, output_folder, val_fraction, test_fraction):
+    missing = [folder for folder in dataset_folders if not os.path.isdir(folder)]
+    if missing:
+        raise ValueError(f"No existen las carpetas de --dataset: {missing}")
+    # Una carpeta ya usada mezclaría archivos de corridas anteriores
+    if os.path.isdir(output_folder) and os.listdir(output_folder):
+        raise ValueError(f"--output debe estar vacía: {output_folder}")
+
     for split_name in ("train", "val", "test"):
         os.makedirs(os.path.join(output_folder, "images", split_name), exist_ok=True)
         os.makedirs(os.path.join(output_folder, "labels", split_name), exist_ok=True)
@@ -198,8 +204,8 @@ def build_yolo_dataset(dataset_folders, output_folder, val_fraction, test_fracti
 def main():
     parser = argparse.ArgumentParser(description="Convert LabelMe folders to a YOLO-seg dataset")
     parser.add_argument("--dataset", nargs="+", required=True,
-                        help="LabelMe folders to pool and split (e.g. labeled-train-00 "
-                             "labeled-train-01 labeled-test-00)")
+                        help="LabelMe folders to pool and split (e.g. floor-plan-cad-labelme/train-00 "
+                             "floor-plan-cad-labelme/train-01 floor-plan-cad-labelme/test-00)")
     parser.add_argument("--output", required=True, help="Output folder for the YOLO dataset")
     parser.add_argument("--val-frac", type=float, default=VAL_FRACTION,
                         help=f"Fraction of drawings for validation (default: {VAL_FRACTION})")
@@ -207,7 +213,6 @@ def main():
                         help=f"Fraction of drawings for test (default: {TEST_FRACTION})")
     args = parser.parse_args()
 
-    random.seed(RANDOM_SEED)
     build_yolo_dataset(args.dataset, args.output, args.val_frac, args.test_frac)
 
 

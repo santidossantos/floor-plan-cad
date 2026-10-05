@@ -72,7 +72,9 @@
     "pasos": [
       "Confirmar que RANDOM_SEED (línea 16, aplicado en main) cubre todo uso de aleatoriedad",
       "Proponer simplificaciones al usuario",
-      "Aplicar cambios aprobados y traducir comentarios al español"
+      "Aplicar cambios aprobados y traducir comentarios al español",
+      "Revisar por posibles bugs en etiquetado generado para las clases curtwall y railing (problema parecido al que solucionamos en la clase wall)",
+      "Determinar si el INKSCAPE_LABEL_FALLBACK aporta algo y si es necesario mantenerlo"
     ],
     "verificacion": "Dos ejecuciones con las mismas entradas producen el mismo split",
     "requiere_servidor": false,
