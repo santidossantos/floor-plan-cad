@@ -28,7 +28,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 - **Código:** simple y estructurado, sin complejidad innecesaria. Comentarios en español, solo donde aclaran algo que el código no dice. No agregar código, salidas ni archivos que la tarea no pida; si algo parece útil, proponerlo antes.
 - **Nombres de archivos:** los scripts y notebooks se nombran por lo que hacen, sin nombres de tecnologías ni versiones de librerías (p. ej. `train_segmentation_model.ipynb`, no `train_yolo26_seg.ipynb`).
 - **Entrenamientos:** cuando el usuario deje una corrida en `runs/` (con su `.csv` y `best.pt`), analizar los resultados y agregar una fila a `runs/HISTORICO.md`: tabla legible con el modelo, el `imgsz` y solo métricas sobre el test de FloorPlanCAD (mAP50 y mAP50-95 de box y seg).
-- **Notebooks:** un título principal; primera celda de código `!nvidia-smi`; cada celda de código, salvo `!nvidia-smi` y la instalación de librerías, precedida por una celda markdown de una línea que describa lo que hace.
+- **Notebooks:** un título principal corto (`#`); primera celda de código `!nvidia-smi`; cada celda de código, salvo `!nvidia-smi` y la instalación de librerías, va bajo una celda markdown con un subtítulo corto (`##`) que diga lo que hace. Si hace falta aclarar algo con más detalle, va en otra celda markdown debajo del subtítulo, como blockquote (`>`).
 - **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa. Los `.md` de `docs/` se nombran en mayúsculas (p. ej. `docs/NORMALIZACION.md`).
 
 ## Estructura
