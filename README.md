@@ -1,4 +1,4 @@
-# 🏠 FloorPlanCAD → YOLO-seg
+# FloorPlanCAD → YOLO
 
 Pipeline para convertir los planos de **FloorPlanCAD** (SVG) en un dataset de segmentación YOLO.
 
