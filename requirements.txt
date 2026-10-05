@@ -1,0 +1,6 @@
+svg.path
+shapely
+Pillow
+numpy
+uv
+PyYAML
