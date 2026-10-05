@@ -744,11 +744,19 @@ def process_files(input_dir, output_dir):
 
 def main():
     parser = argparse.ArgumentParser(description="Convert SVG floor plans to LabelMe JSON")
-    parser.add_argument("--input", required=True, help="Input directory with SVG/PNG pairs")
-    parser.add_argument("--output", required=True, help="Output directory for JSON files")
+    parser.add_argument("--input", nargs="+", required=True,
+                        help="Input folders with SVG/PNG pairs (e.g. train-00 train-01 test-00)")
+    parser.add_argument("--output", required=True,
+                        help="Output folder; each input folder is written to <output>/<folder name>")
     args = parser.parse_args()
 
-    process_files(args.input, args.output)
+    # Cada carpeta va a su propia subcarpeta, porque hay planos con el mismo nombre en distintas carpetas
+    names = [os.path.basename(os.path.normpath(folder)) for folder in args.input]
+    if len(set(names)) != len(names):
+        raise ValueError("Las carpetas de --input deben tener nombres distintos")
+
+    for folder, name in zip(args.input, names):
+        process_files(folder, os.path.join(args.output, name))
 
 
 if __name__ == "__main__":
