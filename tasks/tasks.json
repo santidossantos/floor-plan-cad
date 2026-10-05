@@ -12,7 +12,7 @@
     ],
     "verificacion": "Decisión documentada en docs/ y script resultante aprobado por el usuario",
     "requiere_servidor": false,
-    "passes": true
+    "status": "done"
   },
   {
     "id": "svg-simplificar",
@@ -25,7 +25,7 @@
     ],
     "verificacion": "Salida LabelMe idéntica antes y después del cambio sobre una muestra de SVG",
     "requiere_servidor": false,
-    "passes": true
+    "status": "done"
   },
   {
     "id": "renombrar-scripts",
@@ -37,7 +37,7 @@
     ],
     "verificacion": "No quedan referencias a los nombres viejos en docs/, README.md ni CLAUDE.md, y ambos scripts corren con --help con sus nombres nuevos",
     "requiere_servidor": false,
-    "passes": true
+    "status": "done"
   },
   {
     "id": "svg-paredes",
@@ -51,7 +51,7 @@
     ],
     "verificacion": "En una muestra de planos, cada pared queda como un polígono propio y no hay polígonos espurios (comparación visual aprobada por el usuario)",
     "requiere_servidor": false,
-    "passes": true
+    "status": "done"
   },
   {
     "id": "svg-elipses-rotadas",
@@ -63,7 +63,7 @@
     ],
     "verificacion": "En una muestra con elipses rotadas, los polígonos coinciden con el dibujo del PNG (comparación visual aprobada por el usuario)",
     "requiere_servidor": false,
-    "passes": true
+    "status": "done"
   },
   {
     "id": "labelme-simplificar",
@@ -78,7 +78,7 @@
     ],
     "verificacion": "Dos ejecuciones con las mismas entradas producen el mismo split",
     "requiere_servidor": false,
-    "passes": false
+    "status": "done"
   },
   {
     "id": "versiones-fijas",
@@ -90,7 +90,7 @@
     ],
     "verificacion": "pip install -r requirements.txt funciona en un .venv limpio",
     "requiere_servidor": false,
-    "passes": false
+    "status": "not started"
   },
   {
     "id": "mapeo-clases",
@@ -104,7 +104,7 @@
     ],
     "verificacion": "Tabla aprobada por el usuario; toda clase de BLD-AR tiene equivalente o está marcada como excluida",
     "requiere_servidor": false,
-    "passes": false
+    "status": "not started"
   },
   {
     "id": "augmentations-propuesta",
@@ -116,7 +116,7 @@
     ],
     "verificacion": "Propuesta aprobada por el usuario",
     "requiere_servidor": false,
-    "passes": false
+    "status": "not started"
   },
   {
     "id": "notebook-entrenamiento",
@@ -129,7 +129,7 @@
     ],
     "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
     "requiere_servidor": true,
-    "passes": false
+    "status": "not started"
   },
   {
     "id": "evaluacion-sahi",
@@ -142,7 +142,7 @@
     ],
     "verificacion": "El usuario confirma que la evaluación corrió en el servidor",
     "requiere_servidor": true,
-    "passes": false
+    "status": "not started"
   },
   {
     "id": "readme-actualizar",
@@ -154,6 +154,6 @@
     ],
     "verificacion": "Los comandos del README coinciden con los argumentos actuales de los scripts",
     "requiere_servidor": false,
-    "passes": false
+    "status": "not started"
   }
 ]
