@@ -100,7 +100,7 @@
       "Crear el notebook respetando el formato de CLAUDE.md",
       "Incluir las augmentations aprobadas y semilla fija que sean útlies para luego usar transferir a planos anlógicos",
       "El notebook debe tener una sección para evaluar métricas sobre el conjunto de test del split de FloorPlanCAD, imprimir en el notebook en forma de tabla bonita (map50, map50-95 de box y seg)",
-      "El usuario dejará la corrida en /runs, un .csv del entrenamiento y best.pt , analizar resultados y crear un documento .md en /runs que vaya documentado el historico de los entrenamiento corridos en formato tabla legible para humano. Agregar esta regla al CLAUDE.md",
+      "El usuario dejará la corrida en /runs, un .csv del entrenamiento y best.pt , analizar resultados y crear un documento .md en /runs que vaya documentado el historico  (la tabla debe contener unicamente métricas efectuadas sobre el conjunto de test) de los entrenamiento corridos en formato tabla legible para humano. Agregar esta regla al CLAUDE.md",
       "Testear localmente solo con un subconjunto de datos"
     ],
     "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
