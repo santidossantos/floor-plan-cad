@@ -28,6 +28,18 @@
     "passes": false
   },
   {
+    "id": "svg-elipses-rotadas",
+    "categoria": "scripts",
+    "descripcion": "Aplicar en svg_to_json.py la rotación de las elipses (transform=\"rotate(...)\"), que hoy se ignora; afecta al 83 % de las elipses",
+    "pasos": [
+      "Aplicar la rotación al muestrear puntos y al convertir elipses en polígonos",
+      "Comparar visualmente las anotaciones de lavabos, mesas de luz y bañeras antes y después"
+    ],
+    "verificacion": "En una muestra con elipses rotadas, los polígonos coinciden con el dibujo del PNG (comparación visual aprobada por el usuario)",
+    "requiere_servidor": false,
+    "passes": false
+  },
+  {
     "id": "labelme-simplificar",
     "categoria": "scripts",
     "descripcion": "Evaluar si scripts/conversion/labelme_to_yolo.py se puede simplificar y confirmar el manejo de la semilla aleatoria",

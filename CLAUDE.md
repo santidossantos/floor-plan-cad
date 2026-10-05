@@ -21,6 +21,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 - **Nunca ejecutar localmente** scripts de entrenamiento ni de evaluación: el usuario los corre en un servidor remoto. Excepción: se pueden correr con un subconjunto pequeño de datos para testear el código implementado.
 - **Nunca hacer commit ni push**: el usuario se encarga de git.
 - En `tasks/`, nombrar siempre los archivos `CURRENT-PLAN.md` (plan de la tarea en curso; solo existe mientras hay una) y `PROGRESS.md` (progreso).
+- En `CURRENT-PLAN.md`, presentar los pasos como una lista bajo un título `Pasos`, con `[x]` (hecho) o `[ ]` (pendiente) y una línea por paso. Si la tarea crea o modifica un script, el último paso del plan es siempre `[ ] Aprobación del script resultante por el usuario.`
 
 ## Convenciones
 - **Reproducibilidad:** versiones fijas de `ultralytics` y `sahi` en `requirements.txt`. Fijar esas versiones al utilizar las librerías en cualquier script o jupyter notebook; semilla aleatoria fija en los `.py`.
