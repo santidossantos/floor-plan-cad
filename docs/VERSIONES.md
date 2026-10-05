@@ -6,9 +6,10 @@ Versiones fijas de las librerías del modelo, para instalarlas en scripts y note
 |---|---|
 | ultralytics | 8.4.173 |
 | sahi | 0.12.8 |
+| albumentations | 2.0.8 |
 
 ```bash
-pip install ultralytics==8.4.173 sahi==0.12.8
+pip install ultralytics==8.4.173 sahi==0.12.8 albumentations==2.0.8
 ```
 
 ## Por qué fijarlas
