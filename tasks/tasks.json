@@ -111,7 +111,7 @@
   {
     "id": "notebook-entrenamiento",
     "categoria": "entrenamiento",
-    "descripcion": "Notebook en scripts/model-training/ que entrena YOLO26 sobre FloorPlanCAD con imgsz=736 y batch=4",
+    "descripcion": "Notebook en scripts/model-training/ que entrena YOLO26 sobre FloorPlanCAD con imgsz=1024 y batch=2",
     "pasos": [
       "Crear el notebook respetando el formato de CLAUDE.md",
       "Incluir las augmentations aprobadas y semilla fija que sean útlies para luego usar transferir a planos anlógicos",
