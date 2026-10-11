@@ -154,14 +154,15 @@
     "categoria": "datos",
     "descripcion": "Construir y documentar la tabla de equivalencias entre clases de BLD-AR y FloorPlanCAD",
     "pasos": [
-      "Listar las clases presentes en los JSON de datasets/BLD-AR",
-      "Listar las clases de FloorPlanCAD (SEMANTIC_IDS en floorplancad_to_labelme.py y el paper)",
-      "Proponer equivalencias y consultar las dudosas con el usuario",
-      "Escribir docs/mapeo_clases.md"
+      "Listar las clases presentes en los JSON de datasets/BLD-AR, con su cantidad de instancias y ejemplos visuales",
+      "Listar las clases de FloorPlanCAD que entrenan los modelos (CLASSES en floorplancad_labeled_to_yolo.py)",
+      "Mapear solo las clases que se dibujan y anotan igual en los dos datasets, con aprobación del usuario",
+      "Marcar el resto de las clases de BLD-AR como excluidas (sin equivalente o equivalencia dudosa)",
+      "Escribir docs/MAPEO_CLASES.md"
     ],
     "verificacion": "Tabla aprobada por el usuario; toda clase de BLD-AR tiene equivalente o está marcada como excluida",
     "requiere_servidor": false,
-    "status": "not started"
+    "status": "done"
   },
   {
     "id": "evaluacion-sahi",
