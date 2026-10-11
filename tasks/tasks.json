@@ -136,7 +136,7 @@
     "status": "done"
   },
   {
-    "id": "entrenamiento-augmentations-bldar",
+    "id": "entrenamiento-augmentations-especificas-bldar",
     "categoria": "entrenamiento",
     "descripcion": "Entrenar yolo26m-seg solo con las Albumentations cuya variación aparece en BLD-AR (ver docs/AUGMENTATIONS.md) y compararlo con las corridas con todas y sin ninguna",
     "pasos": [
@@ -147,7 +147,7 @@
     ],
     "verificacion": "Las tres corridas están en runs/HISTORICO.md con métricas de FloorPlanCAD y de BLD-AR",
     "requiere_servidor": true,
-    "status": "not started"
+    "status": "paused"
   },
   {
     "id": "mapeo-clases",
