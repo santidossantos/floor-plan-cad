@@ -128,11 +128,12 @@
     "descripcion": "Proponer las augmentations necesarias para transferir de planos sintéticos a analógicos",
     "pasos": [
       "Proponer augmentations (ruido, manchas, desgaste, variación de tono) con justificación",
+      "Explicar brevemente en la documentacion por que se usa cada Albumentation y por que sirve para el dominio de los planos",
       "Documentar en docs/"
     ],
     "verificacion": "Propuesta aprobada por el usuario",
     "requiere_servidor": false,
-    "status": "not started"
+    "status": "in progress"
   },
   {
     "id": "mapeo-clases",
