@@ -11,3 +11,4 @@
 | 2026-10-05 | versiones-fijas | Se fijan las versiones que utilizarán los Notebooks que contengan Ultralytics y/o Sahi en `docs/VERSIONES.md`
 | 2026-10-05 | convert-to-yolo | Conversor a YOLO: ids de clase fijos, polígonos recortados al borde, duplicados por línea idéntica, validación antes de escribir y `--input`. README actualizado. | Split 80/10/10 sin cambios; solo cambian las 11 591 formas que salían de la imagen. |
 | 2026-10-11 | notebook-entrenamiento | Notebooks de entrenamiento con y sin ruido analógico, evaluación en test y reanudación; histórico en `runs/HISTORICO.md`. | Test seg mAP50-95: yolo26m-seg 0.631 y yolo26l-seg 0.633, ambos con imgsz 1024 y ruido analógico. |
+| 2026-10-11 | augmentations-propuesta | Justificación de las 10 Albumentations en `docs/AUGMENTATIONS.md`, indicando cuáles aparecen en BLD-AR. | BLD-AR son exportaciones digitales limpias: 5 augmentations (manchas, ruido, luz, motas, desenfoque) no se pueden evaluar con él. |

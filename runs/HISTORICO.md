@@ -1,19 +1,22 @@
 # Histórico de entrenamientos
 
-| Corrida             | Modelo      | imgsz | Albumentations  | Box mAP50 | Box mAP50-95 | Seg mAP50 | Seg mAP50-95 |
-|---------------------|-------------|------:|-----------------|----------:|-------------:|----------:|-------------:|
-| 00-YOLO26m-SEG-1024 | yolo26m-seg |  1024 | Ruido analógico |     0.841 |        0.774 |     0.813 |        0.631 |
-| 01-YOLO26l-SEG-1024 | yolo26l-seg |  1024 | Ruido analógico |     0.845 |        0.779 |     0.816 |        0.633 |
+| Corrida             | Modelo      | imgsz | Albumentations  | FloorPlanCAD mAP50 (B) | FloorPlanCAD mAP50-95 (B) | FloorPlanCAD mAP50 (S) | FloorPlanCAD mAP50-95 (S) | BLD-AR mAP50 (B) | BLD-AR mAP50-95 (B) | BLD-AR mAP50 (S) | BLD-AR mAP50-95 (S) |
+|---------------------|-------------|------:|-----------------|-----------------------:|--------------------------:|-----------------------:|--------------------------:|-----------------:|--------------------:|-----------------:|--------------------:|
+| 00-YOLO26m-SEG-1024 | yolo26m-seg |  1024 | Ruido analógico |                  0.841 |                     0.774 |                  0.813 |                     0.631 |                - |                   - |                - |                   - |
+| 01-YOLO26l-SEG-1024 | yolo26l-seg |  1024 | Ruido analógico |                  0.845 |                     0.779 |                  0.816 |                     0.633 |                - |                   - |                - |                   - |
+
+(B) = Box · (S) = Segmentation
 
 ## Configuración común
 
-| Parámetro  | Valor                                                  |
-|------------|--------------------------------------------------------|
-| Evaluación | Test de FloorPlanCAD: 1 566 planos del split 80/10/10  |
-| batch      | 2                                                      |
-| Épocas     | 120                                                    |
-| patience   | 20                                                     |
-| seed       | 42                                                     |
+| Parámetro    | Valor                                 |
+|--------------|---------------------------------------|
+| FloorPlanCAD | Test: 1 566 planos del split 80/10/10 |
+| BLD-AR       | 58 planos (`-`: todavía no evaluado)  |
+| batch        | 2                                     |
+| Épocas       | 120                                   |
+| patience     | 20                                    |
+| seed         | 42                                    |
 
 ## Ruido analógico
 
