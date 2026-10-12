@@ -1,5 +1,7 @@
 # Histórico de entrenamientos
 
+> 🧪 **Las métricas de FloorPlanCAD son siempre sobre el conjunto de test** (1 566 planos que el modelo no vio al entrenar), nunca sobre validación.
+
 | Corrida             | Modelo      | imgsz | Albumentations  | FloorPlanCAD mAP50 (B) | FloorPlanCAD mAP50-95 (B) | FloorPlanCAD mAP50 (S) | FloorPlanCAD mAP50-95 (S) | BLD-AR mAP50 (B) | BLD-AR mAP50-95 (B) | BLD-AR mAP50 (S) | BLD-AR mAP50-95 (S) |
 |---------------------|-------------|------:|-----------------|-----------------------:|--------------------------:|-----------------------:|--------------------------:|-----------------:|--------------------:|-----------------:|--------------------:|
 | 00-YOLO26m-SEG-1024 | yolo26m-seg |  1024 | Ruido analógico |                  0.841 |                     0.774 |                  0.813 |                     0.631 |                - |                   - |                - |                   - |
