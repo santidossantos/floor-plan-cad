@@ -180,14 +180,14 @@
   {
     "id": "evaluacion-bldar-corridas",
     "categoria": "evaluacion",
-    "descripcion": "Evaluar en BLD-AR, con scripts/evaluation/evaluate_segmentation_model.ipynb, los 4 entrenamientos: yolo26m-seg, yolo26l-seg, yolo26m-seg sin ruido analógico (yolo26m-seg-no-noise) y yolo26m-seg con augmentations de BLD-AR (yolo26m-seg-bldar)",
+    "descripcion": "Evaluar en BLD-AR, con scripts/evaluation/evaluate_segmentation_model.ipynb, los 5 entrenamientos: yolo26m-seg-1024 y yolo26l-seg-1024 (ruido analógico), yolo26m-seg-no-noise-1024 (sin augmentations), yolo26m-seg-bldar-1024 (augmentations de BLD-AR) y yolo26m-seg-640 (ruido analógico, imgsz 640)",
     "pasos": [
       "El usuario corre el notebook en el servidor una vez por corrida, cambiando RUN_DIR",
       "Analizar los resultados, incluidas las tablas por clase",
       "Completar las columnas de BLD-AR en runs/HISTORICO.md",
-      "Documentar en runs/HISTORICO.md las augmentations de yolo26m-seg-bldar, en una tabla aparte como la de Configuración común"
+      "Documentar en runs/HISTORICO.md las augmentations de yolo26m-seg-bldar-1024, en una tabla aparte como la de Configuración común"
     ],
-    "verificacion": "Las 4 corridas tienen en runs/HISTORICO.md mAP50 y mAP50-95 de box y seg sobre BLD-AR",
+    "verificacion": "Las 5 corridas tienen en runs/HISTORICO.md mAP50 y mAP50-95 de box y seg sobre BLD-AR",
     "requiere_servidor": true,
     "status": "not started"
   }
