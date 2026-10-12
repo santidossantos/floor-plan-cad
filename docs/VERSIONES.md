@@ -1,15 +1,16 @@
 # Versiones
 
-Versiones fijas de las librerías del modelo, para instalarlas en scripts y notebooks:
+Versiones fijas de las librerías del modelo y de las métricas, para instalarlas en scripts y notebooks:
 
 | Librería | Versión |
 |---|---|
 | ultralytics | 8.4.173 |
 | sahi | 0.12.8 |
 | albumentations | 2.0.8 |
+| pycocotools | 2.0.11 |
 
 ```bash
-pip install ultralytics==8.4.173 sahi==0.12.8 albumentations==2.0.8
+pip install ultralytics==8.4.173 sahi==0.12.8 albumentations==2.0.8 pycocotools==2.0.11
 ```
 
 ## Por qué fijarlas
