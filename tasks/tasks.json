@@ -146,7 +146,7 @@
     ],
     "verificacion": "El usuario aprueba el script y deja la corrida en runs/03-YOLO26m-SEG-1024-BLDAR-SPECIFIC-NOISE",
     "requiere_servidor": true,
-    "status": "paused"
+    "status": "done"
   },
   {
     "id": "mapeo-clases",
@@ -170,7 +170,8 @@
     "pasos": [
       "Definir con el usuario tamaño de tile, solapamiento y métricas",
       "Implementar el script aplicando el mapeo de clases",
-      "Testear localmente solo con un subconjunto de datos"
+      "Testear localmente solo con un subconjunto de datos",
+      "Agregar una celda para revisar a ojo las predicciones de un plano, sin wall"
     ],
     "verificacion": "El usuario confirma que la evaluación corrió en el servidor",
     "requiere_servidor": true,

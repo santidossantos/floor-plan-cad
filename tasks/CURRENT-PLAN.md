@@ -8,4 +8,5 @@ Inferencia por tiles con SAHI sobre BLD-AR y cálculo de métricas con el mapeo 
 3. [x] Definir con el usuario tamaño de tile, solapamiento, métricas y qué hacer con las regiones de clases excluidas.
 4. [x] Implementar la evaluación en `scripts/evaluation/` aplicando el mapeo de clases.
 5. [x] Testear localmente con un subconjunto chico de BLD-AR.
-6. [x] Aprobación del script resultante por el usuario.
+6. [x] Agregar una celda para revisar a ojo las predicciones de un plano, sin wall.
+7. [x] Aprobación del script resultante por el usuario.
