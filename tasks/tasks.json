@@ -138,14 +138,13 @@
   {
     "id": "entrenamiento-augmentations-especificas-bldar",
     "categoria": "entrenamiento",
-    "descripcion": "Entrenar yolo26m-seg solo con las Albumentations cuya variación aparece en BLD-AR (ver docs/AUGMENTATIONS.md) y compararlo con las corridas con todas y sin ninguna",
+    "descripcion": "Entrenar yolo26m-seg solo con las Albumentations cuya variación aparece en BLD-AR (ver docs/AUGMENTATIONS.md) y compararlo con las demás corridas",
     "pasos": [
       "Crear el notebook a partir de train_segmentation_model.ipynb con RandomBrightnessContrast, RandomGamma, erosión o dilatación del trazo, ImageCompression y ToGray",
       "El usuario corre el entrenamiento en el servidor",
-      "Evaluar las tres corridas (todas, ninguna, solo BLD-AR) en el test de FloorPlanCAD y en BLD-AR",
       "Agregar los resultados a runs/HISTORICO.md"
     ],
-    "verificacion": "Las tres corridas están en runs/HISTORICO.md con métricas de FloorPlanCAD y de BLD-AR",
+    "verificacion": "El usuario aprueba el script y deja la corrida en runs/03-YOLO26m-SEG-1024-BLDAR-SPECIFIC-NOISE",
     "requiere_servidor": true,
     "status": "paused"
   },
@@ -165,7 +164,7 @@
     "status": "done"
   },
   {
-    "id": "evaluacion-sahi",
+    "id": "crear-script-evaluacion-sahi",
     "categoria": "evaluacion",
     "descripcion": "Script en scripts/evaluation/ que hace inferencia por tiles con SAHI sobre BLD-AR y calcula métricas",
     "pasos": [

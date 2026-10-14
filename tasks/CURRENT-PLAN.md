@@ -1,4 +1,4 @@
-# Plan: evaluacion-sahi
+# Plan: crear-script-evaluacion-sahi
 
 Inferencia por tiles con SAHI sobre BLD-AR y cálculo de métricas con el mapeo de `docs/MAPEO_CLASES.md`.
 
