@@ -175,7 +175,7 @@
     ],
     "verificacion": "El usuario confirma que la evaluación corrió en el servidor",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "done"
   },
   {
     "id": "evaluacion-bldar-corridas",
@@ -189,6 +189,6 @@
     ],
     "verificacion": "Las 5 corridas tienen en runs/HISTORICO.md mAP50 y mAP50-95 de box y seg sobre BLD-AR",
     "requiere_servidor": true,
-    "status": "not started"
+    "status": "in progress"
   }
 ]

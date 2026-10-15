@@ -1,12 +1,11 @@
-# Plan: crear-script-evaluacion-sahi
+# Plan: evaluacion-bldar-corridas
 
-Inferencia por tiles con SAHI sobre BLD-AR y cálculo de métricas con el mapeo de `docs/MAPEO_CLASES.md`.
+Métricas en BLD-AR de las 5 corridas, con `scripts/evaluation/evaluate_segmentation_model.ipynb`.
 
 ## Pasos
-1. [x] Revisar qué soporta SAHI 0.12.8 con los modelos de segmentación de Ultralytics 8.4.173.
-2. [x] Medir la escala de los planos de BLD-AR frente a la de FloorPlanCAD, para elegir el tamaño de tile.
-3. [x] Definir con el usuario tamaño de tile, solapamiento, métricas y qué hacer con las regiones de clases excluidas.
-4. [x] Implementar la evaluación en `scripts/evaluation/` aplicando el mapeo de clases.
-5. [x] Testear localmente con un subconjunto chico de BLD-AR.
-6. [x] Agregar una celda para revisar a ojo las predicciones de un plano, sin wall.
-7. [x] Aprobación del script resultante por el usuario.
+1. [x] El usuario corre la evaluación de 00, 01, 02 y 03 en el servidor y deja el notebook en cada corrida de `runs/`.
+2. [x] Revisar que cada notebook use los pesos de su corrida y el código aprobado.
+3. [x] Analizar los resultados, incluidas las tablas por clase.
+4. [x] Completar las columnas de BLD-AR de 00, 01, 02 y 03 en `runs/HISTORICO.md`.
+5. [x] Documentar en `runs/HISTORICO.md` las augmentations de yolo26m-seg-bldar-1024.
+6. [ ] Evaluar yolo26m-seg-640, después de resolver el problema de `docs/EVALUACION.md`.
