@@ -27,27 +27,27 @@
 
 Albumentations de `scripts/model-training/train_segmentation_model.ipynb`.
 
-| Transformación                    | Simula                          | Probabilidad |
-|-----------------------------------|---------------------------------|-------------:|
-| RandomBrightnessContrast          | Tono del papel                  |          0.5 |
-| RandomGamma                       | Tono del papel                  |          0.3 |
-| Illumination                      | Luz despareja                   |          0.3 |
-| Spatter (mud)                     | Manchas                         |          0.3 |
-| Erosión o dilatación del trazo    | Trazo más grueso o más fino     |          0.3 |
-| GaussNoise                        | Ruido de escaneo                |          0.3 |
-| SaltAndPepper                     | Motas                           |          0.2 |
-| Defocus                           | Desenfoque                      |          0.2 |
-| ImageCompression                  | Artefactos JPG                  |          0.3 |
-| ToGray                            | Escala de grises, como BLD-AR   |          1.0 |
+| Transformación                 | Simula                              | Probabilidad |
+|--------------------------------|-------------------------------------|-------------:|
+| RandomBrightnessContrast       | Tono del papel                      |          0.5 |
+| RandomGamma                    | Tono del papel                      |          0.3 |
+| Illumination                   | Luz despareja                       |          0.3 |
+| Spatter (mud)                  | Manchas                             |          0.3 |
+| Erosión o dilatación del trazo | Trazo más grueso o más fino         |          0.3 |
+| GaussNoise                     | Ruido de escaneo                    |          0.3 |
+| SaltAndPepper                  | Motas                               |          0.2 |
+| Defocus                        | Desenfoque                          |          0.2 |
+| ImageCompression               | Halos y bordes de la compresión JPG |          0.3 |
+| ToGray                         | Escala de grises, como BLD-AR       |          1.0 |
 
 ## Específicas de BLD-AR
 
 Albumentations de `scripts/model-training/train_segmentation_model_bldar_augmentations.ipynb`: las de ruido analógico cuya variación aparece en BLD-AR (ver `docs/AUGMENTATIONS.md`).
 
-| Transformación                 | Imita en BLD-AR          | Probabilidad |
-|--------------------------------|--------------------------|-------------:|
-| RandomBrightnessContrast       | Contraste del trazo      |          0.5 |
-| RandomGamma                    | Trazos y rellenos grises |          0.3 |
-| Erosión o dilatación del trazo | Grosor del trazo         |          0.3 |
-| ImageCompression               | Artefactos JPG           |          0.3 |
-| ToGray                         | Escala de grises         |          1.0 |
+| Transformación                 | Imita en BLD-AR                     | Probabilidad |
+|--------------------------------|-------------------------------------|-------------:|
+| RandomBrightnessContrast       | Contraste del trazo                 |          0.5 |
+| RandomGamma                    | Trazos y rellenos grises            |          0.3 |
+| Erosión o dilatación del trazo | Grosor del trazo                    |          0.3 |
+| ImageCompression               | Halos y bordes de la compresión JPG |          0.3 |
+| ToGray                         | Escala de grises                    |          1.0 |
