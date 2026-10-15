@@ -190,5 +190,24 @@
     "verificacion": "Las 5 corridas tienen en runs/HISTORICO.md mAP50 y mAP50-95 de box y seg sobre BLD-AR",
     "requiere_servidor": true,
     "status": "in progress"
+  },
+  {
+    "id": "diagnostico-paredes",
+    "categoria": "evaluacion",
+    "descripcion": "Diagnosticar por qué wall transfiere tan mal a BLD-AR (AP50 de seg 0.12, contra 0.82 en el test de FloorPlanCAD) y decidir con evidencia si conviene segmentar wall con una red semántica (p. ej. UNet) en lugar de YOLO",
+    "pasos": [
+      "Revisar cómo trata wall el paper de FloorPlanCAD (clase stuff, sin instancias, evaluada por píxel) y cómo la etiqueta BLD-AR: cantidad, tamaño y forma de los polígonos por plano, y dónde los corta (aberturas, esquinas, columnas)",
+      "Comparar el estilo de dibujo de las paredes en los dos datasets (doble línea vacía, rayado, relleno sólido o gris) y clasificar los planos de BLD-AR por estilo",
+      "Medir wall por píxel, sin instancias (IoU, precisión, recall y F1), en BLD-AR y en el test de FloorPlanCAD, para separar 'no encuentra las paredes' de 'las encuentra pero las divide distinto'",
+      "Generar mapas de calor por píxel de wall (probabilidad de máscara antes del umbral, unida entre tiles) y mapas de activación de la red, y superponerlos con las etiquetas en una muestra de planos",
+      "Armar una matriz de confusión por píxel: qué clase de FloorPlanCAD predice el modelo sobre los píxeles etiquetados como wall en BLD-AR, y qué etiqueta tienen los píxeles predichos como wall",
+      "Relacionar el rendimiento de wall por plano con el grosor de muro y con el estilo de dibujo, y probar tiles adaptados al grosor de muro de cada plano",
+      "Revisar los límites de YOLO-seg con paredes: resolución de los prototipos de máscara frente al grosor del muro, cajas de paredes largas, en L o diagonales, NMS entre paredes vecinas, tope de detecciones por tile y unión de muros cortados entre tiles",
+      "Documentar en docs/ el diagnóstico, con la evidencia a favor o en contra de cada hipótesis",
+      "Proponer, según la evidencia, si conviene una red semántica para wall y con qué criterio compararla contra YOLO (mismas métricas por píxel en FloorPlanCAD y BLD-AR); su entrenamiento sería una tarea aparte"
+    ],
+    "verificacion": "Diagnóstico de wall documentado en docs/, con evidencia a favor o en contra de cada hipótesis (etiquetado, estilo de dibujo, escala y límites de YOLO), y recomendación sobre la red semántica aprobada por el usuario",
+    "requiere_servidor": true,
+    "status": "not started"
   }
 ]
