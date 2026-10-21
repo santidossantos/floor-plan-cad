@@ -199,7 +199,7 @@
       "Revisar cómo trata wall el paper de FloorPlanCAD (clase stuff, sin instancias, evaluada por píxel) y cómo la etiqueta BLD-AR: cantidad, tamaño y forma de los polígonos por plano, y dónde los corta (aberturas, esquinas, columnas)",
       "Comparar el estilo de dibujo de las paredes en los dos datasets (doble línea vacía, rayado, relleno sólido o gris) y clasificar los planos de BLD-AR por estilo",
       "Medir wall por píxel, sin instancias (IoU, precisión, recall y F1), en BLD-AR y en el test de FloorPlanCAD, para separar 'no encuentra las paredes' de 'las encuentra pero las divide distinto'",
-      "Generar mapas de calor por píxel de wall (probabilidad de máscara antes del umbral, unida entre tiles) y mapas de activación de la red, y superponerlos con las etiquetas en una muestra de planos",
+      "Generar los mapas de calor que produce la red para wall: la probabilidad por píxel de la máscara antes del umbral (unida entre tiles) y los mapas de activación de sus capas; superponerlos con las etiquetas en una muestra de planos",
       "Armar una matriz de confusión por píxel: qué clase de FloorPlanCAD predice el modelo sobre los píxeles etiquetados como wall en BLD-AR, y qué etiqueta tienen los píxeles predichos como wall",
       "Relacionar el rendimiento de wall por plano con el grosor de muro y con el estilo de dibujo, y probar tiles adaptados al grosor de muro de cada plano",
       "Revisar los límites de YOLO-seg con paredes: resolución de los prototipos de máscara frente al grosor del muro, cajas de paredes largas, en L o diagonales, NMS entre paredes vecinas, tope de detecciones por tile y unión de muros cortados entre tiles",
