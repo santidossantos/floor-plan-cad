@@ -189,7 +189,7 @@
     ],
     "verificacion": "Las 5 corridas tienen en runs/HISTORICO.md mAP50 y mAP50-95 de box y seg sobre BLD-AR",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "paused"
   },
   {
     "id": "diagnostico-paredes",
@@ -208,6 +208,6 @@
     ],
     "verificacion": "Diagnóstico de wall documentado en docs/, con evidencia a favor o en contra de cada hipótesis (etiquetado, estilo de dibujo, escala y límites de YOLO), y recomendación sobre la red semántica aprobada por el usuario",
     "requiere_servidor": true,
-    "status": "not started"
+    "status": "in progress"
   }
 ]
