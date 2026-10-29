@@ -204,7 +204,7 @@
     ],
     "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
     "requiere_servidor": true,
-    "status": "not started"
+    "status": "in progress"
   },
   {
     "id": "paredes-por-estilo",
