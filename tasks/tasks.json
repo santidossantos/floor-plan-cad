@@ -192,22 +192,93 @@
     "status": "paused"
   },
   {
-    "id": "diagnostico-paredes",
+    "id": "paredes-por-pixel",
     "categoria": "evaluacion",
-    "descripcion": "Diagnosticar por qué wall transfiere tan mal a BLD-AR (AP50 de seg 0.12, contra 0.82 en el test de FloorPlanCAD) y decidir con evidencia si conviene segmentar wall con una red semántica (p. ej. UNet) en lugar de YOLO",
+    "descripcion": "¿El modelo encuentra las paredes, pero las corta distinto que la etiqueta? Mide cuántos píxeles de pared coinciden entre predicción y etiqueta, sin separar paredes, en BLD-AR y en FloorPlanCAD",
     "pasos": [
-      "Revisar cómo trata wall el paper de FloorPlanCAD (clase stuff, sin instancias, evaluada por píxel) y cómo la etiqueta BLD-AR: cantidad, tamaño y forma de los polígonos por plano, y dónde los corta (aberturas, esquinas, columnas)",
-      "Comparar el estilo de dibujo de las paredes en los dos datasets (doble línea vacía, rayado, relleno sólido o gris) y clasificar los planos de BLD-AR por estilo",
-      "Medir wall por píxel, sin instancias (IoU, precisión, recall y F1), en BLD-AR y en el test de FloorPlanCAD, para separar 'no encuentra las paredes' de 'las encuentra pero las divide distinto'",
-      "Generar los mapas de calor que produce la red para wall: la probabilidad por píxel de la máscara antes del umbral (unida entre tiles) y los mapas de activación de sus capas; superponerlos con las etiquetas en una muestra de planos",
-      "Armar una matriz de confusión por píxel: qué clase de FloorPlanCAD predice el modelo sobre los píxeles etiquetados como wall en BLD-AR, y qué etiqueta tienen los píxeles predichos como wall",
-      "Relacionar el rendimiento de wall por plano con el grosor de muro y con el estilo de dibujo, y probar tiles adaptados al grosor de muro de cada plano",
-      "Revisar los límites de YOLO-seg con paredes: resolución de los prototipos de máscara frente al grosor del muro, cajas de paredes largas, en L o diagonales, NMS entre paredes vecinas, tope de detecciones por tile y unión de muros cortados entre tiles",
-      "Documentar en docs/ el diagnóstico, con la evidencia a favor o en contra de cada hipótesis",
-      "Proponer, según la evidencia, si conviene una red semántica para wall y con qué criterio compararla contra YOLO (mismas métricas por píxel en FloorPlanCAD y BLD-AR); su entrenamiento sería una tarea aparte"
+      "Acordar con el usuario cómo se confirma o descarta",
+      "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Probarlo localmente con pocos planos",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
     ],
-    "verificacion": "Diagnóstico de wall documentado en docs/, con evidencia a favor o en contra de cada hipótesis (etiquetado, estilo de dibujo, escala y límites de YOLO), y recomendación sobre la red semántica aprobada por el usuario",
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "not started"
+  },
+  {
+    "id": "paredes-por-estilo",
+    "categoria": "evaluacion",
+    "descripcion": "¿Le cuesta encontrar paredes vacías, sin líneas adentro? Mide qué parte de cada pared encuentra el modelo, según tenga líneas adentro, esté vacía o esté rellena",
+    "pasos": [
+      "Acordar con el usuario cómo se confirma o descarta",
+      "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Probarlo localmente con pocos planos",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+    ],
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "requiere_servidor": true,
+    "status": "not started"
+  },
+  {
+    "id": "paredes-por-espesor",
+    "categoria": "evaluacion",
+    "descripcion": "¿Falla más en los planos con muros mucho más finos o más gruesos que en entrenamiento? Mide la coincidencia de píxeles de pared en cada plano de BLD-AR, contra el espesor de sus muros",
+    "pasos": [
+      "Acordar con el usuario cómo se confirma o descarta",
+      "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Probarlo localmente con pocos planos",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+    ],
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "requiere_servidor": true,
+    "status": "not started"
+  },
+  {
+    "id": "union-paredes-entre-tiles",
+    "categoria": "evaluacion",
+    "descripcion": "¿Cómo unir los muros cortados entre tiles sin juntar paredes distintas? Mide con AP50 alternativas a la unión actual, propuestas al usuario",
+    "pasos": [
+      "Acordar con el usuario cómo se confirma o descarta",
+      "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Probarlo localmente con pocos planos",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+    ],
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "requiere_servidor": true,
+    "status": "not started"
+  },
+  {
+    "id": "limites-modelo-paredes",
+    "categoria": "evaluacion",
+    "descripcion": "¿El tipo de modelo limita la detección de paredes? Mide la resolución de las máscaras contra el grosor del muro, las paredes en L o U y el máximo de detecciones por tile",
+    "pasos": [
+      "Acordar con el usuario cómo se confirma o descarta",
+      "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Probarlo localmente con pocos planos",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+    ],
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "requiere_servidor": true,
+    "status": "not started"
+  },
+  {
+    "id": "mapas-calor-paredes",
+    "categoria": "evaluacion",
+    "descripcion": "¿Dónde \"ve\" paredes la red? (pedido de los profesores) Genera mapas de calor de la red sobre algunos planos de los dos datasets",
+    "pasos": [
+      "Acordar con el usuario cómo se confirma o descarta",
+      "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Probarlo localmente con pocos planos",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+    ],
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "requiere_servidor": true,
+    "status": "not started"
   }
 ]

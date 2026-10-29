@@ -16,7 +16,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 4. En `tasks.json`, el campo `status` vale `not started`, `in progress`, `paused` (empezada y frenada, sin `CURRENT-PLAN.md`) o `done`. Nunca marcar `done` sin cumplir su `verificacion`, ni borrar tareas o cambiar su `verificacion` para darlas por cumplidas. Otros cambios (pasos, tareas nuevas) se proponen al usuario antes de aplicarlos.
 
 ## Forma de trabajo
-- Pasos pequeños.
+- Pasos pequeños y de a uno, para que el usuario pueda revisar y entender cada cambio: cada tarea tiene un solo objetivo y, si necesita código, un script chico que haga solo eso. No avanzar sin la revisión del usuario.
 - Ante cualquier ambigüedad, preguntar. No inferir nada sin evidencia.
 - **Nunca ejecutar localmente** scripts de entrenamiento ni de evaluación: el usuario los corre en un servidor remoto. Excepción: se pueden correr con un subconjunto pequeño de datos para testear el código implementado.
 - **Nunca hacer commit ni push**: el usuario se encarga de git.
