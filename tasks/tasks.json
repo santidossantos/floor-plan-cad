@@ -204,7 +204,7 @@
     ],
     "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "done"
   },
   {
     "id": "paredes-por-estilo",
@@ -279,6 +279,20 @@
     ],
     "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
     "requiere_servidor": true,
+    "status": "not started"
+  },
+  {
+    "id": "muros-sin-etiquetar-floorplancad",
+    "categoria": "datos",
+    "descripcion": "¿Cuántos muros de FloorPlanCAD quedaron sin etiquetar y qué conviene hacer? En algunos planos, elementos de las capas de muros no tienen la clase wall (p. ej. A-WALL en 0014-0052): en el test el modelo los marca y cuentan como error, y en entrenamiento aprende que no son pared",
+    "pasos": [
+      "Medir, en train y en test, cuántos planos tienen elementos sin la clase wall en las capas de muros (con \"WALL\" o \"墙\" en el nombre) y qué parte del dibujo de muros representan",
+      "Mostrar al usuario ejemplos de planos afectados: plano, etiqueta actual y elementos sin clase",
+      "Proponer opciones (dejarlo como está, etiquetar esos muros, sacar los planos afectados o ignorar esas zonas al evaluar), teniendo en cuenta que el respaldo por capa se quitó porque traía rayados, parquet y columnas (docs/PAREDES.md)",
+      "Documentar la decisión en docs/PAREDES.md"
+    ],
+    "verificacion": "La decisión queda aprobada por el usuario y documentada en docs/PAREDES.md, con la cantidad de planos afectados en train y en test",
+    "requiere_servidor": false,
     "status": "not started"
   }
 ]
