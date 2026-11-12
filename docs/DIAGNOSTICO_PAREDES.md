@@ -39,7 +39,7 @@ Espesor de muro por plano, en píxeles de la imagen que ve el modelo (tile de 10
 
 ## Unión de predicciones de SAHI
 
-La evaluación une las predicciones de wall con GREEDYNMM (IOS 0.5) para juntar los muros cortados entre tiles. Prueba sin el modelo, con predicciones perfectas: las etiquetas de wall de BLD-AR pasadas a la evaluación como si fueran predicciones del modelo, sin cortarlas en tiles.
+La evaluación une las predicciones de wall con GREEDYNMM (IOS 0.5) para juntar los muros cortados entre tiles. Prueba sin el modelo: en lugar de las predicciones, se evalúan las propias paredes etiquetadas de BLD-AR (con confianza 1 y sin cortarlas en tiles), antes y después de aplicarles la unión.
 
 | | Paredes | AP50 de seg | AP50-95 de seg |
 |---|---:|---:|---:|
@@ -75,6 +75,8 @@ El AP50 de seg cuenta pared por pared: una pared predicha acierta si su máscara
 1. **La unión entre tiles junta paredes distintas:** en la prueba sin el modelo (las etiquetas usadas como predicciones), el AP50 de seg de pared de BLD-AR no pasa de 0.77. El test de FloorPlanCAD se evalúa con el plano entero, sin tiles.
 2. **BLD-AR corta las paredes distinto:** deja L, T y U en un polígono (49 % de sus paredes, contra 25 % en FloorPlanCAD) y corta en las columnas. Una L bien marcada pero en dos pedazos puede contar como dos errores y una pared no encontrada.
 3. **El modelo no encuentra toda la pared:** marca el 61 % de la pared de BLD-AR, contra el 81 % en el test de FloorPlanCAD. Falta saber qué pared se le escapa (estilo y espesor).
+
+Además, el 0.82 y el 0.12 no se calculan igual: cambian la herramienta, la resolución de las máscaras y el máximo de predicciones (`docs/EVALUACION.md`). Parte de la diferencia puede venir del cálculo.
 
 En píxeles, BLD-AR llega a tres cuartos del test de FloorPlanCAD; en AP50 de seg, a menos de un quinto. Eso sugiere que separar las paredes (1 y 2) pesa mucho, pero no se midió cuánto aporta cada causa al AP50 de seg.
 
