@@ -213,6 +213,7 @@
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Medir también el AP50 de pared de cada grupo (paredes con líneas adentro, vacías y rellenas), para la columna de impacto en el AP50 de docs/DIAGNOSTICO_PAREDES.md",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
@@ -228,6 +229,7 @@
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Medir también el AP50 de pared de cada grupo (planos con espesor parecido al de FloorPlanCAD y muy distinto), para la columna de impacto en el AP50 de docs/DIAGNOSTICO_PAREDES.md",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
@@ -293,6 +295,21 @@
     ],
     "verificacion": "La decisión queda aprobada por el usuario y documentada en docs/PAREDES.md, con la cantidad de planos afectados en train y en test",
     "requiere_servidor": false,
+    "status": "not started"
+  },
+  {
+    "id": "impacto-corte-paredes",
+    "categoria": "evaluacion",
+    "descripcion": "¿Cuánto AP50 de pared se pierde en BLD-AR por cortar las paredes distinto que la etiqueta? Recorta lo que marca el modelo con las paredes de la etiqueta (cada píxel predicho va a la pared etiquetada sobre la que cae) y vuelve a medir el AP50; junta el efecto del corte y de la unión entre tiles",
+    "pasos": [
+      "Acordar con el usuario cómo se mide",
+      "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
+      "Probarlo localmente con pocos planos",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+    ],
+    "verificacion": "El impacto del corte en el AP50 de pared de BLD-AR queda anotado en docs/DIAGNOSTICO_PAREDES.md, en la columna de impacto de la hipótesis de etiquetado",
+    "requiere_servidor": true,
     "status": "not started"
   }
 ]
