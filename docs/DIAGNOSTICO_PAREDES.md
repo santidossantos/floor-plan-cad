@@ -16,15 +16,26 @@ Medido sobre las 964 paredes de BLD-AR y 2 403 paredes de 300 planos de test-00.
 
 ## Estilo de dibujo
 
-**Líneas adentro de la pared.** Muestra de 300 paredes al azar del test de FloorPlanCAD, marcadas a ojo (`paredes-por-estilo`):
+**Líneas adentro de la pared.** Muestra de 527 paredes al azar del test de FloorPlanCAD, marcadas a ojo (`paredes-por-estilo`):
 
 | Marca | Paredes |
 |---|---:|
-| Tiene una línea a lo largo de la pared (eje, capa o rayado), aunque sea punteada | 70 |
-| No tiene: vacía, o solo la cruzan líneas de lado a lado | 115 |
-| No se ve: la etiqueta no coincide con el dibujo, es un cruce de líneas o es dudosa | 115 |
+| Tiene una línea a lo largo de la pared (eje, capa o rayado), aunque sea punteada | 136 |
+| No tiene: vacía, o solo la cruzan líneas de lado a lado | 168 |
+| No se ve: la etiqueta no coincide con el dibujo, es un cruce de líneas o es dudosa | 223 |
 
-De las paredes que se ven claras, el 38 % tiene líneas adentro (70 de 185). En BLD-AR casi todas son una doble línea vacía, pero hay medianeras con el eje punteado adentro (por ejemplo, en BLD_01_AR_FP_01, 02 y 03); no se contaron.
+De las paredes que se ven claras, el 45 % tiene líneas adentro (136 de 304). En BLD-AR casi todas son una doble línea vacía, pero hay medianeras con el eje punteado adentro (por ejemplo, en BLD_01_AR_FP_01, 02 y 03); no se contaron.
+
+**¿Encuentra peor las paredes sin líneas?** `scripts/evaluation/measure_wall_detection_by_style.ipynb`, corrida 00, en el test de FloorPlanCAD: 136 paredes de la muestra con líneas y las primeras 136 sin líneas, en el orden al azar.
+
+| Paredes | Pared encontrada | AP50 de seg de pared |
+|---|---:|---:|
+| Sin líneas adentro (A) | 0.870 | 0.311 |
+| Con líneas adentro (B) | 0.900 | 0.407 |
+
+- A / B = 0.870 / 0.900 = **96.6 %**: descartada (95 % o más). Con una muestra anterior más chica (115 sin líneas y 70 con líneas) daba 94.7 %.
+- El AP50 de seg de pared de cada grupo cambia mucho entre muestras (con la anterior, 0.35 contra 0.36), así que no se usa para decidir. Se calcula como en BLD-AR (tiles, unión y zonas ignoradas), por eso no se compara con el 0.82.
+- El estilo no explica la pared que falta en BLD-AR: en el test de FloorPlanCAD el modelo encuentra el 87 % de las paredes sin líneas, y en BLD-AR, donde casi todas son así, el 61 % de la pared.
 
 **Rellenos.** BLD-AR tiene 4 muros medianeros rellenos, que son el 27 % de su área de pared: 2 grises (BLD_01_AR_FP_01 y 02, 2 %) y 2 negros de ~195 px (BLD_14_AR_FP_01 y 02, 25 %). En FloorPlanCAD no se encontraron paredes rellenas (0 % del área en 300 planos).
 
@@ -88,7 +99,7 @@ En píxeles, BLD-AR llega a tres cuartos del test de FloorPlanCAD; en AP50 de se
 | Hipótesis | Evidencia | Estado | Impacto en el AP50 de seg de pared (BLD-AR) |
 |---|---|---|---|
 | Etiquetado: las instancias no coinciden | BLD-AR une L, T y U en un polígono y corta en columnas. Por píxel, encuentra el 75 % de la pared que en el test de FloorPlanCAD y lo que marca es pared; el AP50 de seg cae mucho más | Confirmada en parte: encuentra el 75 % de la pared que en el test de FloorPlanCAD; falta medir cuánto del AP50 de seg se pierde por el corte | Sin medir |
-| Estilo: el modelo depende de las líneas dentro de la pared | En la muestra a ojo del test de FloorPlanCAD, 70 de 185 paredes claras tienen líneas adentro; en BLD-AR casi todas son vacías, salvo medianeras con el eje punteado | Probable; se mide en `paredes-por-estilo` | Sin medir |
+| Estilo: el modelo depende de las líneas dentro de la pared | En la muestra a ojo del test de FloorPlanCAD, 136 de 304 paredes claras tienen líneas adentro; en BLD-AR casi todas son vacías, salvo medianeras con el eje punteado | Descartada: encuentra el 87 % de las paredes sin líneas y el 90 % de las que tienen (A / B = 96.6 %) | Sin medir en BLD-AR; en el test de FloorPlanCAD, AP50 de seg de pared 0.31 sin líneas contra 0.41 con líneas, inestable entre muestras |
 | Escala: muros más gruesos o finos que en entrenamiento | 24 de 56 planos fuera de 0.7–1.4 veces | Probable en los planos extremos; falta el AP50 de seg por plano | Sin medir |
 | Unión de SAHI entre tiles | En la prueba sin el modelo (las etiquetas usadas como predicciones), une el 22 % de las paredes y deja el AP50 de seg en 0.77 | Confirmado: techo del AP50 de seg de pared | Solo en una prueba sin el modelo (las etiquetas usadas como predicciones): −0.22 (de 0.99 a 0.77); con las predicciones del modelo, sin medir |
 | Límites de YOLO-seg con paredes | - | Pendiente | Sin medir |

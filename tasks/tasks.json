@@ -221,7 +221,7 @@
     ],
     "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "done"
   },
   {
     "id": "paredes-por-espesor",
