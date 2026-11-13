@@ -209,11 +209,12 @@
   {
     "id": "paredes-por-estilo",
     "categoria": "evaluacion",
-    "descripcion": "¿Le cuesta encontrar paredes vacías, sin líneas adentro? Mide qué parte de cada pared encuentra el modelo, según tenga líneas adentro, esté vacía o esté rellena",
+    "descripcion": "¿Le cuesta encontrar paredes vacías, sin líneas adentro? Mide qué parte de cada pared encuentra el modelo, según tenga o no líneas adentro, en una muestra del test de FloorPlanCAD marcada a ojo",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
+      "Marcar a ojo, en una muestra de paredes del test de FloorPlanCAD, si cada una tiene o no líneas adentro, y que el usuario revise una parte",
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
-      "Medir también el AP50 de seg de pared de cada grupo (paredes con líneas adentro, vacías y rellenas), para la columna «Impacto en el AP50 de seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
+      "Medir también el AP50 de seg de pared de cada grupo (paredes con líneas adentro y vacías), para la columna «Impacto en el AP50 de seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"

@@ -16,14 +16,17 @@ Medido sobre las 964 paredes de BLD-AR y 2 403 paredes de 300 planos de test-00.
 
 ## Estilo de dibujo
 
-Interior de las paredes, sin sus bordes, ponderado por área.
+**Líneas adentro de la pared.** Muestra de 300 paredes al azar del test de FloorPlanCAD, marcadas a ojo (`paredes-por-estilo`):
 
-| Interior de la pared | FloorPlanCAD | BLD-AR |
-|---|---:|---:|
-| Vacío (doble línea limpia) | 31 % | 72 % |
-| Con trazos adentro (ejes, capas, rayado) | 68 % | 0 % |
-| Relleno gris | 0 % | 2 % (1 muro medianero en BLD_01_AR_FP_01 y otro en 02) |
-| Relleno negro | 0 % | 25 % (1 muro medianero de ~195 px en BLD_14_AR_FP_01 y otro en 02) |
+| Marca | Paredes |
+|---|---:|
+| Tiene una línea a lo largo de la pared (eje, capa o rayado), aunque sea punteada | 70 |
+| No tiene: vacía, o solo la cruzan líneas de lado a lado | 115 |
+| No se ve: la etiqueta no coincide con el dibujo, es un cruce de líneas o es dudosa | 115 |
+
+De las paredes que se ven claras, el 38 % tiene líneas adentro (70 de 185). En BLD-AR casi todas son una doble línea vacía, pero hay medianeras con el eje punteado adentro (por ejemplo, en BLD_01_AR_FP_01, 02 y 03); no se contaron.
+
+**Rellenos.** BLD-AR tiene 4 muros medianeros rellenos, que son el 27 % de su área de pared: 2 grises (BLD_01_AR_FP_01 y 02, 2 %) y 2 negros de ~195 px (BLD_14_AR_FP_01 y 02, 25 %). En FloorPlanCAD no se encontraron paredes rellenas (0 % del área en 300 planos).
 
 ## Escala
 
@@ -85,7 +88,7 @@ En píxeles, BLD-AR llega a tres cuartos del test de FloorPlanCAD; en AP50 de se
 | Hipótesis | Evidencia | Estado | Impacto en el AP50 de seg de pared (BLD-AR) |
 |---|---|---|---|
 | Etiquetado: las instancias no coinciden | BLD-AR une L, T y U en un polígono y corta en columnas. Por píxel, encuentra el 75 % de la pared que en el test de FloorPlanCAD y lo que marca es pared; el AP50 de seg cae mucho más | Confirmada en parte: encuentra el 75 % de la pared que en el test de FloorPlanCAD; falta medir cuánto del AP50 de seg se pierde por el corte | Sin medir |
-| Estilo: el modelo depende de los trazos dentro de la pared | 68 % de las paredes de FloorPlanCAD tienen trazos adentro; las de BLD-AR casi nunca | Probable; falta medir en FloorPlanCAD por estilo | Sin medir |
+| Estilo: el modelo depende de las líneas dentro de la pared | En la muestra a ojo del test de FloorPlanCAD, 70 de 185 paredes claras tienen líneas adentro; en BLD-AR casi todas son vacías, salvo medianeras con el eje punteado | Probable; se mide en `paredes-por-estilo` | Sin medir |
 | Escala: muros más gruesos o finos que en entrenamiento | 24 de 56 planos fuera de 0.7–1.4 veces | Probable en los planos extremos; falta el AP50 de seg por plano | Sin medir |
 | Unión de SAHI entre tiles | En la prueba sin el modelo (las etiquetas usadas como predicciones), une el 22 % de las paredes y deja el AP50 de seg en 0.77 | Confirmado: techo del AP50 de seg de pared | Solo en una prueba sin el modelo (las etiquetas usadas como predicciones): −0.22 (de 0.99 a 0.77); con las predicciones del modelo, sin medir |
 | Límites de YOLO-seg con paredes | - | Pendiente | Sin medir |
