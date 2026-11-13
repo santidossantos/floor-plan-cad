@@ -24,6 +24,7 @@ Una predicción coincide con una etiqueta si son de la misma clase y sus máscar
 - Entre el test de FloorPlanCAD y BLD-AR cambia más que el conjunto: también la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima. Parte de la diferencia entre los dos AP puede venir del cálculo; no se midió cuánto.
 - En `runs/HISTORICO.md`, el mAP de FloorPlanCAD promedia 30 clases y el de BLD-AR, 7. Para comparar los dos conjuntos hay que mirar clase por clase.
 - La prueba de la unión entre tiles de `docs/DIAGNOSTICO_PAREDES.md` usa el mismo cálculo que BLD-AR.
+- La unión de predicciones de SAHI se aplica a todo el plano, aunque entre en un solo tile: también junta paredes vecinas, no solo muros cortados entre tiles. A ojo, el cálculo de BLD-AR baja el AP50 de seg de pared del test de FloorPlanCAD de 0.82 a ~0.35 (`docs/DIAGNOSTICO_PAREDES.md`).
 - Falta verificar si el máximo de 100 predicciones por plano y clase deja afuera paredes en los planos grandes (BLD_14 mide 15 000 × 12 000 px y se corta en cientos de tiles).
 
 ## Problema pendiente: corridas con imgsz distinto de 1024

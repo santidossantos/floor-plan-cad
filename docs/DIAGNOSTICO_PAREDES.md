@@ -94,6 +94,21 @@ Además, el 0.82 y el 0.12 no se calculan igual: cambian la herramienta, la reso
 
 En píxeles, BLD-AR llega a tres cuartos del test de FloorPlanCAD; en AP50 de seg, a menos de un quinto. Eso sugiere que separar las paredes (1 y 2) pesa mucho, pero no se midió cuánto aporta cada causa al AP50 de seg.
 
+### Reparto a ojo de la caída
+
+Estimación gruesa con lo medido hasta ahora (corrida 00):
+
+| Paso | AP50 de seg de pared | De dónde sale |
+|---|---:|---|
+| Test de FloorPlanCAD, cálculo de Ultralytics | 0.82 | Notebook de entrenamiento |
+| Test de FloorPlanCAD, mismo cálculo que BLD-AR | ~0.35 | `paredes-por-estilo`: 0.31 y 0.41 en una muestra, 0.35 y 0.36 en otra |
+| BLD-AR, si solo perdiera la pared que no encuentra | ~0.26 | 0.35 × 0.75 (pared encontrada en BLD-AR / en el test de FloorPlanCAD) |
+| BLD-AR, real | 0.12 | Evaluación en BLD-AR |
+
+De los 0.70 puntos de caída: ~0.47 por el cálculo, ~0.09 por la pared que el modelo no encuentra y ~0.14 por lo demás (corte distinto de BLD-AR, planos grandes cortados en muchos tiles, espesor).
+- **Hallazgo:** la unión de predicciones de SAHI se aplica a todas las predicciones del plano, aunque entre en un solo tile (`sahi/predict.py`, `get_sliced_prediction`). No solo junta muros cortados entre tiles: también junta paredes vecinas cuyas cajas se superponen, en cualquier plano. Por eso el test de FloorPlanCAD, con planos de 1 000 px en un solo tile, también baja con el cálculo de BLD-AR.
+- **Por qué es solo a ojo:** el ~0.35 puede estar subestimado, porque en `paredes-por-estilo` cuenta una pared por plano y las demás se ignoran de a una (una predicción que cubre varias paredes ignoradas puede contar como error); la cuenta supone que el AP baja en la misma proporción que la pared encontrada; y los grupos son chicos (136 paredes). El número exacto lo da `evaluacion-test-floorplancad-igual-bldar`.
+
 ## Hipótesis
 
 | Hipótesis | Evidencia | Estado | Impacto en el AP50 de seg de pared (BLD-AR) |
