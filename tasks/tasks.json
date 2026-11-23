@@ -115,7 +115,7 @@
     "pasos": [
       "Crear el notebook respetando el formato de CLAUDE.md",
       "Incluir las augmentations aprobadas y semilla fija que sean útlies para luego usar transferir a planos anlógicos",
-      "El notebook debe tener una sección para evaluar métricas sobre el conjunto de test del split de FloorPlanCAD, imprimir en el notebook en forma de tabla bonita (map50, map50-95 de box y seg)",
+      "El notebook debe tener una sección para evaluar métricas sobre el conjunto de test del split de FloorPlanCAD, imprimir en el notebook en forma de tabla bonita (mAP50-Box, mAP50-95-Box, mAP50-Seg y mAP50-95-Seg)",
       "El usuario dejará la corrida en /runs de los entrenamientos , analizar resultados y crear un documento .md en /runs que vaya documentado el historico  (la tabla debe contener unicamente métricas efectuadas sobre el conjunto de test, y además el modelo y el imgsz usados en cada entrenamiento) de los entrenamiento corridos en formato tabla legible para humano. Agregar esta regla al CLAUDE.md"
     ],
     "verificacion": "El usuario confirma que el entrenamiento corrió en el servidor",
@@ -142,7 +142,7 @@
     "pasos": [
       "Crear el notebook a partir de train_segmentation_model.ipynb con RandomBrightnessContrast, RandomGamma, erosión o dilatación del trazo, ImageCompression y ToGray",
       "El usuario corre el entrenamiento en el servidor",
-      "Agregar los resultados a runs/HISTORICO.md"
+      "Agregar los resultados a docs/HISTORICO.md"
     ],
     "verificacion": "El usuario aprueba el script y deja la corrida en runs/03-YOLO26m-SEG-1024-BLDAR-SPECIFIC-NOISE",
     "requiere_servidor": true,
@@ -184,17 +184,17 @@
     "pasos": [
       "El usuario corre el notebook en el servidor una vez por corrida, cambiando WEIGHTS",
       "Analizar los resultados, incluidas las tablas por clase",
-      "Completar las columnas de BLD-AR en runs/HISTORICO.md",
-      "Documentar en runs/HISTORICO.md las augmentations de yolo26m-seg-bldar-1024, en una tabla aparte como la de Configuración común"
+      "Completar las columnas de BLD-AR en docs/HISTORICO.md",
+      "Documentar en docs/HISTORICO.md las augmentations de yolo26m-seg-bldar-1024, en una tabla aparte como la de Configuración común"
     ],
-    "verificacion": "Las 5 corridas tienen en runs/HISTORICO.md mAP50 y mAP50-95 de box y seg sobre BLD-AR",
+    "verificacion": "Las 5 corridas tienen en docs/HISTORICO.md mAP50-Box, mAP50-95-Box, mAP50-Seg y mAP50-95-Seg sobre BLD-AR",
     "requiere_servidor": true,
     "status": "paused"
   },
   {
     "id": "evaluacion-test-floorplancad-igual-bldar",
     "categoria": "evaluacion",
-    "descripcion": "¿Cuánto de la diferencia entre el AP50 de seg del test de FloorPlanCAD (0.82) y el de BLD-AR (0.12) viene de que se calculan distinto?. Evalúa el test de FloorPlanCAD con el mismo cálculo que BLD-AR (tiles, unión y COCOeval); los planos de 1 000 px entran en un solo tile, así que cambian sobre todo la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima (docs/EVALUACION.md)",
+    "descripcion": "¿Cuánto de la diferencia entre el AP50-Seg de pared del test de FloorPlanCAD (0.82) y el de BLD-AR (0.12) viene de que se calculan distinto? Evalúa el test de FloorPlanCAD con el mismo cálculo que BLD-AR (tiles, unión y COCOeval); los planos de 1 000 px entran en un solo tile, así que cambian sobre todo la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima (docs/EVALUACION.md)",
     "pasos": [
       "Se evalúan: las 7 mapeadas a BLD-AR",
       "Crear el notebook en scripts/evaluation/, con la corrida 00",
@@ -202,7 +202,7 @@
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/EVALUACION.md"
     ],
-    "verificacion": "docs/EVALUACION.md tiene, por clase, el AP50 y el AP50-95 de seg del test de FloorPlanCAD con los dos cálculos",
+    "verificacion": "docs/EVALUACION.md tiene, por clase, el AP50-Seg y el AP50-95-Seg del test de FloorPlanCAD con los dos cálculos",
     "requiere_servidor": true,
     "status": "not started"
   },
@@ -215,6 +215,7 @@
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
+      "Crear docs/DIAGNOSTICO_PAREDES.md con una tabla para medir las hipótesis de pared: una fila por tarea de diagnóstico de paredes y las columnas Hipótesis, Estado (confirmada, descartada o pendiente), Medida e «Impacto en el AP50-Seg de pared»",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
     ],
     "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
@@ -228,7 +229,7 @@
     "pasos": [
       "Investigar las mejores soluciones y acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
-      "Medir también el seg50 de seg de pared de cada grupo (paredes con líneas adentro y vacías), para la columna «Impacto en el AP50 de seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
+      "Medir también el AP50-Seg de pared de cada grupo (paredes con líneas adentro y vacías), para la columna «Impacto en el AP50-Seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
@@ -244,7 +245,7 @@
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
-      "Medir también el AP50 de seg de pared de cada grupo (planos con espesor parecido al de FloorPlanCAD y muy distinto), para la columna «Impacto en el AP50 de seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
+      "Medir también el AP50-Seg de pared de cada grupo (planos con espesor parecido al de FloorPlanCAD y muy distinto), para la columna «Impacto en el AP50-Seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
@@ -256,7 +257,7 @@
   {
     "id": "union-paredes-entre-tiles",
     "categoria": "evaluacion",
-    "descripcion": "¿Cómo unir los muros cortados entre tiles sin juntar paredes distintas? Mide con el AP50 de seg de pared alternativas a la unión actual, propuestas al usuario",
+    "descripcion": "¿Cómo unir los muros cortados entre tiles sin juntar paredes distintas? Mide con el AP50-Seg de pared alternativas a la unión actual, propuestas al usuario",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
@@ -315,7 +316,7 @@
   {
     "id": "impacto-corte-paredes",
     "categoria": "evaluacion",
-    "descripcion": "¿Cuánto AP50 de seg de pared se pierde en BLD-AR por cortar las paredes distinto que la etiqueta? Recorta lo que marca el modelo con las paredes de la etiqueta (cada píxel predicho va a la pared etiquetada sobre la que cae) y vuelve a medir el AP50 de seg de pared; junta el efecto del corte y de la unión entre tiles",
+    "descripcion": "¿Cuánto AP50-Seg de pared se pierde en BLD-AR por cortar las paredes distinto que la etiqueta? Recorta lo que marca el modelo con las paredes de la etiqueta (cada píxel predicho va a la pared etiquetada sobre la que cae) y vuelve a medir el AP50-Seg de pared; junta el efecto del corte y de la unión entre tiles",
     "pasos": [
       "Acordar con el usuario cómo se mide",
       "Crear el notebook en scripts/evaluation/, con la corrida 00 y los mismos parámetros que la evaluación en BLD-AR",
@@ -323,7 +324,7 @@
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
     ],
-    "verificacion": "El impacto del corte en el AP50 de seg de pared de BLD-AR queda anotado en docs/DIAGNOSTICO_PAREDES.md, en la columna de impacto de la hipótesis de etiquetado",
+    "verificacion": "El impacto del corte en el AP50-Seg de pared de BLD-AR queda anotado en docs/DIAGNOSTICO_PAREDES.md, en la columna de impacto de la hipótesis de etiquetado",
     "requiere_servidor": true,
     "status": "not started"
   }

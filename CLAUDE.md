@@ -16,7 +16,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 4. En `tasks.json`, el campo `status` vale `not started`, `in progress`, `paused` (empezada y frenada, sin `CURRENT-PLAN.md`) o `done`. Nunca marcar `done` sin cumplir su `verificacion`, ni borrar tareas o cambiar su `verificacion` para darlas por cumplidas. Otros cambios (pasos, tareas nuevas) se proponen al usuario antes de aplicarlos.
 
 ## Forma de trabajo
-- Pasos pequeños y de a uno, para que el usuario pueda revisar y entender cada cambio: cada tarea tiene un solo objetivo y, si necesita código, un script chico que haga solo eso. No avanzar sin la revisión del usuario.
+- Pasos pequeños y de a uno, para que el usuario pueda revisar y entender cada cambio: cada tarea tiene un solo objetivo. No avanzar sin la revisión del usuario.
 - Ante cualquier ambigüedad, preguntar. No inferir nada sin evidencia.
 - **Nunca ejecutar localmente** scripts de entrenamiento ni de evaluación: el usuario los corre en un servidor remoto. Excepción: se pueden correr con un subconjunto pequeño de datos para testear el código implementado.
 - **Nunca hacer commit ni push**: el usuario se encarga de git.
@@ -25,11 +25,12 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 
 ## Convenciones
 - **Reproducibilidad:** usar las versiones de `ultralytics`, `sahi` y `albumentations` de `docs/VERSIONES.md` al instalar esas librerías en cualquier script o jupyter notebook; semilla aleatoria fija en los `.py`.
-- **Código:** simple y estructurado, sin complejidad innecesaria. Comentarios en español, solo donde aclaran algo que el código no dice. No agregar código, salidas ni archivos que la tarea no pida; si algo parece útil, proponerlo antes.
+- **Código:** cada script o notebook prueba una sola cosa puntual y es mínimo: solo lo que esa prueba necesita. Simple y estructurado, sin complejidad innecesaria. Comentarios en español, solo donde aclaran algo que el código no dice. No agregar código, salidas ni archivos que la tarea no pida; si algo parece útil, proponerlo antes.
 - **Nombres de archivos:** los scripts y notebooks se nombran por lo que hacen, sin nombres de tecnologías ni versiones de librerías (p. ej. `train_segmentation_model.ipynb`, no `train_yolo26_seg.ipynb`).
-- **Entrenamientos:** cuando el usuario deje una corrida en `runs/` (con su `.csv` y `best.pt`), analizar los resultados y agregar una fila a `docs/HISTORICO.md`: tabla legible con el modelo, el `imgsz`, las albumentations utilizadas y métricas (mAP50 y mAP50-95 de box y seg) sobre el test de FloorPlanCAD y sobre BLD-AR, con `-` en las de BLD-AR mientras la corrida no se haya evaluado ahí.
-- **Notebooks:** un título principal corto (`#`); primera celda de código `!nvidia-smi`; cada celda de código, salvo `!nvidia-smi` y la instalación de librerías, va bajo una celda markdown con un subtítulo corto (`##`) que diga lo que hace. Si hace falta aclarar algo con más detalle, va en otra celda markdown debajo del subtítulo, como blockquote (`>`).
-- **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa. Los `.md` de `docs/` se nombran en mayúsculas (p. ej. `docs/NORMALIZACION.md`).
+- **Entrenamientos:** cuando el usuario deje una corrida en `runs/` (con su `.csv` y `best.pt`), analizar los resultados y agregar una fila a `docs/HISTORICO.md`: tabla legible con el modelo, el `imgsz`, las albumentations utilizadas y métricas (mAP50-Box, mAP50-95-Box, mAP50-Seg y mAP50-95-Seg) sobre el test de FloorPlanCAD y sobre BLD-AR, con `-` en las de BLD-AR mientras la corrida no se haya evaluado ahí.
+- **Notebooks:** un título principal corto (`#`); primera celda de código `!nvidia-smi`; cada celda de código, salvo `!nvidia-smi` y la instalación de librerías, va bajo una celda markdown con un subtítulo corto (`##`) que diga lo que hace y, en la misma celda, una justificación muy breve de por qué hace falta (una línea, como blockquote `>`). Si hace falta aclarar algo con más detalle, va en otra celda markdown debajo del subtítulo, como blockquote (`>`).
+- **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa. Los `.md` de `docs/` se nombran en mayúsculas (p. ej. `docs/NORMALIZACION.md`). Al terminar de agregar o modificar documentación (`docs/`, `tasks/`, `README.md`, `CLAUDE.md`), verificar que las referencias (rutas, archivos, corridas, tareas) y las métricas sean consistentes entre todos los documentos.
+- **Métricas:** nunca escribir AP ni mAP solos; siempre diferenciar AP-Seg de AP-Box, con el umbral delante (p. ej. AP50-Seg, AP50-95-Box, mAP50-95-Seg).
 
 ## Estructura
 ```
