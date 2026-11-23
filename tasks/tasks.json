@@ -197,14 +197,14 @@
     "descripcion": "¿Cuánto de la diferencia entre el mAP50-Seg del test de FloorPlanCAD (0.82) y el de BLD-AR (0.32), en las 6 clases mapeadas, viene de que se calculan distinto? Evalúa el test de FloorPlanCAD con el mismo cálculo que BLD-AR (tiles, unión y COCOeval); los planos de 1 000 px entran en un solo tile, así que cambian sobre todo la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima (docs/EVALUACION.md)",
     "pasos": [
       "Se evalúan: las 6 mapeadas a BLD-AR",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024",
       "El notebook debe tener una celda para verificar visualmente la inferencia en cada dataset, quiero poder ver las imagenes con sus mascaras de segmentacion para inspeccion visual",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/EVALUACION.md"
     ],
     "verificacion": "docs/EVALUACION.md tiene, por clase, el AP50-Seg y el AP50-95-Seg del test de FloorPlanCAD con los dos cálculos",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "done"
   },
   {
     "id": "paredes-por-pixel",
@@ -212,7 +212,7 @@
     "descripcion": "¿El modelo encuentra las paredes, pero las corta distinto que la etiqueta? Mide cuántos píxeles de pared coinciden entre predicción y etiqueta, sin separar paredes, en BLD-AR y en FloorPlanCAD",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01 y los mismos parámetros que la evaluación en BLD-AR",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Crear docs/DIAGNOSTICO_PAREDES.md con una tabla para medir las hipótesis de pared: una fila por tarea de diagnóstico de paredes y las columnas Hipótesis, Estado (confirmada, descartada o pendiente), Medida e «Impacto en el AP50-Seg de pared»",
@@ -228,7 +228,7 @@
     "descripcion": "¿Le cuesta encontrar paredes vacías, sin líneas adentro? Mide qué parte de cada pared encuentra el modelo, según tenga o no líneas adentro, en una muestra del test de FloorPlanCAD marcada a ojo",
     "pasos": [
       "Investigar las mejores soluciones y acordar con el usuario cómo se confirma o descarta",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01 y los mismos parámetros que la evaluación en BLD-AR",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Medir también el AP50-Seg de pared de cada grupo (paredes con líneas adentro y vacías), para la columna «Impacto en el AP50-Seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
@@ -244,7 +244,7 @@
     "descripcion": "¿Falla más en los planos con muros mucho más finos o más gruesos que en entrenamiento? Mide la coincidencia de píxeles de pared en cada plano de BLD-AR, contra el espesor de sus muros",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01 y los mismos parámetros que la evaluación en BLD-AR",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Medir también el AP50-Seg de pared de cada grupo (planos con espesor parecido al de FloorPlanCAD y muy distinto), para la columna «Impacto en el AP50-Seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
@@ -260,7 +260,7 @@
     "descripcion": "¿Cómo unir los muros cortados entre tiles sin juntar paredes distintas? Mide con el AP50-Seg de pared alternativas a la unión actual, propuestas al usuario",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01 y los mismos parámetros que la evaluación en BLD-AR",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
@@ -275,7 +275,7 @@
     "descripcion": "¿El tipo de modelo limita la detección de paredes? Mide la resolución de las máscaras contra el grosor del muro, las paredes en L o U y el máximo de detecciones por tile",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01 y los mismos parámetros que la evaluación en BLD-AR",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
@@ -290,7 +290,7 @@
     "descripcion": "¿Dónde \"ve\" paredes la red? (pedido de los profesores) Genera mapas de calor de la red sobre algunos planos de los dos datasets",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01 y los mismos parámetros que la evaluación en BLD-AR",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
@@ -319,7 +319,7 @@
     "descripcion": "¿Cuánto AP50-Seg de pared se pierde en BLD-AR por cortar las paredes distinto que la etiqueta? Recorta lo que marca el modelo con las paredes de la etiqueta (cada píxel predicho va a la pared etiquetada sobre la que cae) y vuelve a medir el AP50-Seg de pared; junta el efecto del corte y de la unión entre tiles",
     "pasos": [
       "Acordar con el usuario cómo se mide",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01 y los mismos parámetros que la evaluación en BLD-AR",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
