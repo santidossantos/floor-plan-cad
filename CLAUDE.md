@@ -3,7 +3,7 @@
 ## Objetivo
 Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos sintéticos vectoriales rinde bien sobre planos analógicos reales (manchados, desgastados, con ruido o distintos tonos).
 
-- **Entrenamiento:** FloorPlanCAD → `datasets/FloorPlanCAD` (paper: `datasets/FloorPlanCAD/FloorPlanCAD.pdf`)
+- **Entrenamiento:** FloorPlanCAD → `datasets/train-00`, `datasets/train-01` y `datasets/test-00` (paper: `docs/PAPER.pdf`)
 - **Evaluación:** BLD-AR → `datasets/BLD-AR` (ya en formato LabelMe)
 - **Referencia:** SAHI (https://github.com/obss/sahi)
 
@@ -27,7 +27,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 - **Reproducibilidad:** usar las versiones de `ultralytics`, `sahi` y `albumentations` de `docs/VERSIONES.md` al instalar esas librerías en cualquier script o jupyter notebook; semilla aleatoria fija en los `.py`.
 - **Código:** simple y estructurado, sin complejidad innecesaria. Comentarios en español, solo donde aclaran algo que el código no dice. No agregar código, salidas ni archivos que la tarea no pida; si algo parece útil, proponerlo antes.
 - **Nombres de archivos:** los scripts y notebooks se nombran por lo que hacen, sin nombres de tecnologías ni versiones de librerías (p. ej. `train_segmentation_model.ipynb`, no `train_yolo26_seg.ipynb`).
-- **Entrenamientos:** cuando el usuario deje una corrida en `runs/` (con su `.csv` y `best.pt`), analizar los resultados y agregar una fila a `runs/HISTORICO.md`: tabla legible con el modelo, el `imgsz`, las albumentations utilizadas y métricas (mAP50 y mAP50-95 de box y seg) sobre el test de FloorPlanCAD y sobre BLD-AR, con `-` en las de BLD-AR mientras la corrida no se haya evaluado ahí.
+- **Entrenamientos:** cuando el usuario deje una corrida en `runs/` (con su `.csv` y `best.pt`), analizar los resultados y agregar una fila a `docs/HISTORICO.md`: tabla legible con el modelo, el `imgsz`, las albumentations utilizadas y métricas (mAP50 y mAP50-95 de box y seg) sobre el test de FloorPlanCAD y sobre BLD-AR, con `-` en las de BLD-AR mientras la corrida no se haya evaluado ahí.
 - **Notebooks:** un título principal corto (`#`); primera celda de código `!nvidia-smi`; cada celda de código, salvo `!nvidia-smi` y la instalación de librerías, va bajo una celda markdown con un subtítulo corto (`##`) que diga lo que hace. Si hace falta aclarar algo con más detalle, va en otra celda markdown debajo del subtítulo, como blockquote (`>`).
 - **Documentación:** en español, mínima, en `.md` organizados por carpetas. Documentar hallazgos importantes de manera concisa. Los `.md` de `docs/` se nombran en mayúsculas (p. ej. `docs/NORMALIZACION.md`).
 
@@ -36,8 +36,8 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 scripts/conversion/     # floorplancad_to_labelme.py, floorplancad_labeled_to_yolo.py
 scripts/evaluation/     # inferencia con SAHI
 scripts/model-training/ # notebook de entrenamiento del modelo de segmentación
-runs/                   # resultados de los entrenamientos e HISTORICO.md
+runs/                   # resultados de los entrenamientos
 tasks/                  # tasks.json, PROGRESS.md y CURRENT-PLAN.md (solo durante una tarea)
-docs/                   # mapeo de clases y hallazgos
+docs/                   # mapeo de clases, hallazgos e HISTORICO.md
 docs/VERSIONES.md       # versiones de ultralytics, sahi y albumentations
 ```

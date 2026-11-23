@@ -20,4 +20,4 @@ La erosión o dilatación es una transformación propia (`StrokeMorphology`): `A
 ## Hallazgos
 - BLD-AR no son escaneos sino exportaciones digitales en gris: fondo blanco puro, sin manchas, ruido ni luz despareja. Varían el tono del trazo (negro, gris medio o muy claro), el grosor, los rellenos y la resolución (de 1200×1600 a 15000×12000 px).
 - Por eso Illumination, Spatter, GaussNoise, SaltAndPepper y Defocus no se pueden evaluar con BLD-AR: apuntan a degradaciones que no tiene.
-- El aporte de las augmentations se mide contra la corrida sin ellas (`train_segmentation_model_without_analog_noise.ipynb`), en `runs/HISTORICO.md`.
+- El aporte de las augmentations se mide contra la corrida sin ellas (`train_segmentation_model_without_analog_noise.ipynb`), en `docs/HISTORICO.md`.

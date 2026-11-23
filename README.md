@@ -16,10 +16,9 @@ Coloca los datasets en `datasets/` (ignorado por git):
 
 ```
 datasets/
-└── FloorPlanCAD/
-    ├── train-00/
-    ├── train-01/
-    └── test-00/
+├── train-00/
+├── train-01/
+└── test-00/
 ```
 
 ## 🚀 Pipeline
@@ -30,7 +29,7 @@ Genera las anotaciones LabelMe JSON a partir de cada par SVG/PNG y guarda cada P
 
 ```bash
 python scripts/conversion/floorplancad_to_labelme.py \
-  --input  datasets/FloorPlanCAD/train-00 datasets/FloorPlanCAD/train-01 datasets/FloorPlanCAD/test-00 \
+  --input  datasets/train-00 datasets/train-01 datasets/test-00 \
   --output datasets/floor-plan-cad-labelme
 ```
 
