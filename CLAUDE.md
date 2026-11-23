@@ -10,9 +10,9 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 `datasets/` está ignorada por git.
 
 ## En cada sesión
-1. Al iniciar: leer `tasks/PROGRESS.md`, `tasks/tasks.json` y `git log --oneline -10`.
+1. Al iniciar: leer `tasks/tasks.json` y `git log --oneline -10`.
 2. Cuando el usuario pida implementar una tarea de `tasks.json`, poner su `"status": "in progress"` y crear `tasks/CURRENT-PLAN.md` con el plan de **esa** tarea. Trabajar una sola tarea por vez.
-3. Al terminar: poner `"status": "done"`, eliminar `tasks/CURRENT-PLAN.md`, agregar una fila a la tabla de `tasks/PROGRESS.md` (Fecha | Título | Hecho | Notas; cada celda de 2 o 3 renglones como máximo; sin columna Siguiente, porque lo da `tasks.json`) y avisar al usuario.
+3. Al terminar: poner `"status": "done"`, eliminar `tasks/CURRENT-PLAN.md` y avisar al usuario.
 4. En `tasks.json`, el campo `status` vale `not started`, `in progress`, `paused` (empezada y frenada, sin `CURRENT-PLAN.md`) o `done`. Nunca marcar `done` sin cumplir su `verificacion`, ni borrar tareas o cambiar su `verificacion` para darlas por cumplidas. Otros cambios (pasos, tareas nuevas) se proponen al usuario antes de aplicarlos.
 
 ## Forma de trabajo
@@ -20,7 +20,7 @@ Evaluar si un modelo de detección y segmentación (YOLO) entrenado con planos s
 - Ante cualquier ambigüedad, preguntar. No inferir nada sin evidencia.
 - **Nunca ejecutar localmente** scripts de entrenamiento ni de evaluación: el usuario los corre en un servidor remoto. Excepción: se pueden correr con un subconjunto pequeño de datos para testear el código implementado.
 - **Nunca hacer commit ni push**: el usuario se encarga de git.
-- En `tasks/`, nombrar siempre los archivos `CURRENT-PLAN.md` (plan de la tarea en curso; solo existe mientras hay una) y `PROGRESS.md` (progreso).
+- En `tasks/`, el plan de la tarea en curso se llama siempre `CURRENT-PLAN.md` y solo existe mientras hay una.
 - En `CURRENT-PLAN.md`, presentar los pasos como una lista bajo un título `Pasos`, con `[x]` (hecho) o `[ ]` (pendiente) y una línea por paso. Si la tarea crea o modifica un script, el último paso del plan es siempre `[ ] Aprobación del script resultante por el usuario.`
 
 ## Convenciones
@@ -38,7 +38,7 @@ scripts/conversion/     # floorplancad_to_labelme.py, floorplancad_labeled_to_yo
 scripts/evaluation/     # inferencia con SAHI
 scripts/model-training/ # notebook de entrenamiento del modelo de segmentación
 runs/                   # resultados de los entrenamientos
-tasks/                  # tasks.json, PROGRESS.md y CURRENT-PLAN.md (solo durante una tarea)
+tasks/                  # tasks.json y CURRENT-PLAN.md (solo durante una tarea)
 docs/                   # mapeo de clases, hallazgos e HISTORICO.md
 docs/VERSIONES.md       # versiones de ultralytics, sahi y albumentations
 ```

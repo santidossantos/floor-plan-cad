@@ -194,9 +194,9 @@
   {
     "id": "evaluacion-test-floorplancad-igual-bldar",
     "categoria": "evaluacion",
-    "descripcion": "¿Cuánto de la diferencia entre el AP50-Seg de pared del test de FloorPlanCAD (0.82) y el de BLD-AR (0.12) viene de que se calculan distinto? Evalúa el test de FloorPlanCAD con el mismo cálculo que BLD-AR (tiles, unión y COCOeval); los planos de 1 000 px entran en un solo tile, así que cambian sobre todo la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima (docs/EVALUACION.md)",
+    "descripcion": "¿Cuánto de la diferencia entre el AP50-Seg de pared del test de FloorPlanCAD (0.82) y el de BLD-AR (0.11) viene de que se calculan distinto? Evalúa el test de FloorPlanCAD con el mismo cálculo que BLD-AR (tiles, unión y COCOeval); los planos de 1 000 px entran en un solo tile, así que cambian sobre todo la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima (docs/EVALUACION.md)",
     "pasos": [
-      "Se evalúan: las 7 mapeadas a BLD-AR",
+      "Se evalúan: las 6 mapeadas a BLD-AR",
       "Crear el notebook en scripts/evaluation/, con la corrida 00",
       "El notebook debe tener una celda para verificar visualmente la inferencia en cada dataset, quiero poder ver las imagenes con sus mascaras de segmentacion para inspeccion visual",
       "El usuario lo corre en el servidor",

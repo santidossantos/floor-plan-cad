@@ -10,7 +10,6 @@
 | sliding_door | sliding_door |                   48 |
 | stair        | stair        |                   79 |
 | elevator     | elevator     |                   38 |
-| railing      | railing      |                   33 |
 
 ## Clases de BLD-AR excluidas
 
@@ -19,6 +18,7 @@
 | column              |        668 | Sin equivalente en FloorPlanCAD |
 | void                |        194 | Sin equivalente en FloorPlanCAD |
 | parapet_wall        |        115 | Equivalencia dudosa             |
+| railing             |         33 | Anotación distinta              |
 | pocket_door         |         26 | Equivalencia dudosa             |
 | parapet_railing     |         22 | Equivalencia dudosa             |
 | elevator_door       |         17 | Equivalencia dudosa             |
@@ -37,9 +37,10 @@
 
 ## Clases de FloorPlanCAD sin mapear
 
-Se descartan sus predicciones al evaluar en BLD-AR: TV_cabinet, airconditioner, bath, bath_tub, bay_window, bed, bedside_cupboard, blind_window, chair, curtwall, double_door, escalator, gas_stove, opening_symbol, refrigerator, sink, sofa, squat_toilet, table, toilet, urinal, wardrobe, washing_machine.
+Se descartan sus predicciones al evaluar en BLD-AR: TV_cabinet, airconditioner, bath, bath_tub, bay_window, bed, bedside_cupboard, blind_window, chair, curtwall, double_door, escalator, gas_stove, opening_symbol, railing, refrigerator, sink, sofa, squat_toilet, table, toilet, urinal, wardrobe, washing_machine.
 
 ## Hallazgos
 - BLD-AR anota solo elementos de arquitectura (25 clases): no tiene muebles, sanitarios ni electrodomésticos.
 - double_door no se mapea: la única puerta doble encontrada en BLD-AR está anotada como dos puertas, una por hoja, y FloorPlanCAD la anota como un solo polígono.
+- railing no se mapea: FloorPlanCAD la anota como una banda de ~23 px alrededor de las líneas de la baranda, y BLD-AR, como una tira de ~8 px (medianas en train de FloorPlanCAD y en BLD-AR con tiles de 1024 px; wall mide ~17 y ~18 px). Aunque el modelo ubique bien la baranda, el IoU de las máscaras no llega a 0.5: con el mapeo anterior, su AP50-Seg en BLD-AR dio 0.000 en las 4 corridas evaluadas.
 - wall: BLD-AR deja las L y T en un mismo polígono y corta en las columnas; FloorPlanCAD corta en los encuentros (ver `docs/PAREDES.md`).

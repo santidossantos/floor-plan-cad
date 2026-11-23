@@ -19,11 +19,11 @@ Una predicción coincide con una etiqueta si son de la misma clase y sus máscar
 | Máximo de predicciones | 300 por imagen | 100 por plano y clase, las de más confianza |
 | Orden para emparejar | De mayor a menor IoU | De mayor a menor confianza |
 | Zonas ignoradas | Ninguna | Las clases de BLD-AR sin mapear: no cuenta lo predicho sobre ellas (área en común sobre el área de la predicción ≥ umbral) |
-| Clases en el mAP-Box y el mAP-Seg | Las 30 | Las 7 mapeadas |
+| Clases en el mAP-Box y el mAP-Seg | Las 30 | Las 6 mapeadas |
 
 **Consistencia**
 - Entre el test de FloorPlanCAD y BLD-AR cambia más que el conjunto: también la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima. Parte de la diferencia de AP-Box y AP-Seg entre los dos conjuntos puede venir del cálculo; no se midió cuánto.
-- En `docs/HISTORICO.md`, el mAP-Box y el mAP-Seg de FloorPlanCAD promedian 30 clases, y los de BLD-AR, 7. Para comparar los dos conjuntos hay que mirar clase por clase.
+- En `docs/HISTORICO.md`, el mAP-Box y el mAP-Seg de FloorPlanCAD promedian 30 clases, y los de BLD-AR, 6. Para comparar los dos conjuntos hay que mirar clase por clase.
 - La unión de predicciones de SAHI se aplica a todo el plano, aunque entre en un solo tile: también junta paredes vecinas cuyas cajas se superponen, no solo muros cortados entre tiles. Por eso el cálculo de BLD-AR también puede bajar el AP50-Seg de pared del test de FloorPlanCAD (lo mide `evaluacion-test-floorplancad-igual-bldar`).
 - La prueba de la unión entre tiles (`union-paredes-entre-tiles`) debe usar el mismo cálculo que BLD-AR.
 - Falta verificar si el máximo de 100 predicciones por plano y clase deja afuera paredes en los planos grandes (BLD_14 mide 15 000 × 12 000 px y se corta en cientos de tiles).
