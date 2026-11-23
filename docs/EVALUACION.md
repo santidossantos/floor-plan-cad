@@ -1,6 +1,6 @@
 # Evaluación en BLD-AR
 
-**Decisión:** `scripts/evaluation/evaluate_segmentation_model.ipynb` corta cada plano de BLD-AR en tiles de 1024 px con SAHI. Es el tamaño en el que los muros de BLD-AR quedan con el grosor que ve el modelo en FloorPlanCAD con imgsz 1024 (mediana de ~19 px contra ~18 px).
+**Decisión:** `scripts/evaluation/evaluate_bldar.ipynb` corta cada plano de BLD-AR en tiles de 1024 px con SAHI. Es el tamaño en el que los muros de BLD-AR quedan con el grosor que ve el modelo en FloorPlanCAD con imgsz 1024 (mediana de ~19 px contra ~18 px).
 
 ## Cómo se calcula el AP-Seg
 
@@ -12,7 +12,7 @@ Una predicción coincide con una etiqueta si son de la misma clase y sus máscar
 
 | | Test de FloorPlanCAD | BLD-AR |
 |---|---|---|
-| Dónde se calcula | `model.val` de Ultralytics, en los notebooks de entrenamiento | COCOeval de pycocotools, en `evaluate_segmentation_model.ipynb` |
+| Dónde se calcula | `model.val` de Ultralytics, en los notebooks de entrenamiento | COCOeval de pycocotools, en `evaluate_bldar.ipynb` |
 | Imagen | Plano entero, a imgsz | Tiles de 1024 px; después se unen las predicciones de los tiles |
 | Resolución de las máscaras al compararlas | 1/4 de imgsz (256 px con imgsz 1024) | La del plano original |
 | Confianza mínima | 0.001 | 0.05 |
