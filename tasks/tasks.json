@@ -192,19 +192,36 @@
     "status": "paused"
   },
   {
-    "id": "evaluacion-test-floorplancad-igual-bldar",
+    "id": "determinar-costo-calculo-sahi-floorplancad-vs-bldar",
     "categoria": "evaluacion",
-    "descripcion": "¿Cuánto de la diferencia entre el mAP50-Seg del test de FloorPlanCAD (0.82) y el de BLD-AR (0.32), en las 6 clases mapeadas, viene de que se calculan distinto? Evalúa el test de FloorPlanCAD con el mismo cálculo que BLD-AR (tiles, unión y COCOeval); los planos de 1 000 px entran en un solo tile, así que cambian sobre todo la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima (docs/EVALUACION.md)",
+    "descripcion": "¿Cuánto de la diferencia entre el mAP50-Seg del test de FloorPlanCAD (0.82) y el de BLD-AR (0.32), en las 6 clases mapeadas, viene de que se calculan distinto? Evalúa el test de FloorPlanCAD con el mismo cálculo que BLD-AR (tiles, unión y COCOeval) y separa cuánto aporta la unión de SAHI; los planos de 1 000 px entran en un solo tile, así que cambian sobre todo la herramienta, la resolución de las máscaras, el máximo de predicciones y la confianza mínima (docs/EVALUACION.md)",
     "pasos": [
       "Se evalúan: las 6 mapeadas a BLD-AR",
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024",
       "El notebook debe tener una celda para verificar visualmente la inferencia en cada dataset, quiero poder ver las imagenes con sus mascaras de segmentacion para inspeccion visual",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/EVALUACION.md"
+      "Agregar al notebook el cálculo de BLD-AR sin la unión de SAHI (get_prediction), para separar cuánto aporta la unión",
+      "El usuario lo vuelve a correr en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md"
     ],
-    "verificacion": "docs/EVALUACION.md tiene, por clase, el AP50-Seg y el AP50-95-Seg del test de FloorPlanCAD con los dos cálculos",
+    "verificacion": "docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md tiene, por clase, el AP50-Seg y el AP50-95-Seg del conjunto de test de FloorPlanCAD con el cálculo del conjunto de test de FloorPlanCAD, con el de BLD-AR y con el de BLD-AR sin la unión de SAHI",
     "requiere_servidor": true,
-    "status": "done"
+    "status": "in progress"
+  },
+  {
+    "id": "union-paredes-entre-tiles",
+    "categoria": "evaluacion",
+    "descripcion": "¿Cómo unir en BLD-AR los muros cortados entre tiles sin juntar paredes distintas? En BLD-AR la unión de SAHI junta los muros cortados entre tiles y elimina las predicciones repetidas donde los tiles se superponen, pero también junta paredes vecinas distintas (docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md). Mide con el AP50-Seg de pared alternativas a la unión actual (p. ej. NMS), propuestas al usuario",
+    "pasos": [
+      "Acordar con el usuario cómo se confirma o descarta",
+      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
+      "El usuario lo corre en el servidor",
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md",
+      "Mover lo relacionado a este diagnostico, la parte de SAHI y lo que creas que relevante y que no va en EVALUACION.md a docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md "
+    ],
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "requiere_servidor": true,
+    "status": "not started"
   },
   {
     "id": "paredes-por-pixel",
@@ -246,21 +263,6 @@
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Medir también el AP50-Seg de pared de cada grupo (planos con espesor parecido al de FloorPlanCAD y muy distinto), para la columna «Impacto en el AP50-Seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
-      "Probarlo localmente con pocos planos",
-      "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
-    ],
-    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
-    "requiere_servidor": true,
-    "status": "not started"
-  },
-  {
-    "id": "union-paredes-entre-tiles",
-    "categoria": "evaluacion",
-    "descripcion": "¿Cómo unir los muros cortados entre tiles sin juntar paredes distintas? Mide con el AP50-Seg de pared alternativas a la unión actual, propuestas al usuario",
-    "pasos": [
-      "Acordar con el usuario cómo se confirma o descarta",
-      "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
