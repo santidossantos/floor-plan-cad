@@ -1,6 +1,6 @@
 # Evaluación en BLD-AR
 
-**Decisión:** `scripts/evaluation/evaluate_bldar.ipynb` corta cada plano de BLD-AR en tiles de 1024 px con SAHI. Así los muros quedan del grosor que el modelo vio al entrenar (~19 px contra ~18 px). Qué hace SAHI: `docs/CAIDA_RENDIMIENTO_BLDAR.md`.
+**Decisión:** `scripts/evaluation/evaluate_bldar.ipynb` corta cada plano de BLD-AR en tiles de 1024 px con SAHI. Así los muros quedan del grosor que el modelo vio al entrenar (~19 px contra ~18 px). Qué hace SAHI: `docs/CAIDA_RENDIMIENTO_BLDAR.md`, sección 1.1.
 
 ## Cómo se calcula el AP50-Seg
 
