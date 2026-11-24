@@ -187,7 +187,7 @@
       "Completar las columnas de BLD-AR en docs/HISTORICO.md",
       "Documentar en docs/HISTORICO.md las augmentations de yolo26m-seg-bldar-1024, en una tabla aparte como la de Configuración común"
     ],
-    "verificacion": "Las 5 corridas tienen en docs/HISTORICO.md mAP50-Box, mAP50-95-Box, mAP50-Seg y mAP50-95-Seg sobre BLD-AR",
+    "verificacion": "Las 5 corridas tienen en docs/HISTORICO.md mAP50-Box y mAP50-Seg sobre BLD-AR",
     "requiere_servidor": true,
     "status": "paused"
   },
@@ -202,22 +202,22 @@
       "El usuario lo corre en el servidor",
       "Agregar al notebook el cálculo de BLD-AR sin la unión de SAHI (get_prediction), para separar cuánto aporta la unión",
       "El usuario lo vuelve a correr en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md"
     ],
-    "verificacion": "docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md tiene, por clase, el AP50-Seg y el AP50-95-Seg del conjunto de test de FloorPlanCAD con el cálculo del conjunto de test de FloorPlanCAD, con el de BLD-AR y con el de BLD-AR sin la unión de SAHI",
+    "verificacion": "docs/CAIDA_RENDIMIENTO_BLDAR.md tiene, por clase, el AP50-Seg del conjunto de test de FloorPlanCAD con el cálculo del conjunto de test de FloorPlanCAD, con el de BLD-AR y con el de BLD-AR sin la unión de SAHI",
     "requiere_servidor": true,
     "status": "in progress"
   },
   {
     "id": "union-paredes-entre-tiles",
     "categoria": "evaluacion",
-    "descripcion": "¿Cómo unir en BLD-AR los muros cortados entre tiles sin juntar paredes distintas? En BLD-AR la unión de SAHI junta los muros cortados entre tiles y elimina las predicciones repetidas donde los tiles se superponen, pero también junta paredes vecinas distintas (docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md). Mide con el AP50-Seg de pared alternativas a la unión actual (p. ej. NMS), propuestas al usuario",
+    "descripcion": "¿Cómo unir en BLD-AR los muros cortados entre tiles sin juntar paredes distintas? En BLD-AR la unión de SAHI junta los muros cortados entre tiles y elimina las predicciones repetidas donde los tiles se superponen, pero también junta paredes vecinas distintas (docs/CAIDA_RENDIMIENTO_BLDAR.md). Mide con el AP50-Seg de pared alternativas a la unión actual (p. ej. NMS), propuestas al usuario",
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "El usuario lo corre en el servidor",
       "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md",
-      "Mover lo relacionado a este diagnostico, la parte de SAHI y lo que creas que relevante y que no va en EVALUACION.md a docs/DIAGNOSTICO_MALA_TRANSFERENCIA.md "
+      "Mover lo relacionado a este diagnostico, la parte de SAHI y lo que creas que relevante y que no va en EVALUACION.md a docs/CAIDA_RENDIMIENTO_BLDAR.md "
     ],
     "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
     "requiere_servidor": true,
