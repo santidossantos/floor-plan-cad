@@ -29,11 +29,23 @@ Corta cada plano en tiles de 1024 px que se superponen un 20 %, pasa cada uno po
 | elevator | 0.887 | 0.857 | 0.857 | 0.059 |
 | Media | 0.819 | 0.801 | 0.839 | 0.324 |
 
+**Caída del mAP50-Seg y de dónde viene** (sin sliding_door, porque el cálculo de BLD-AR la sube mucho y compensa lo que bajan las demás)
+
+| | 6 clases | Sin sliding_door |
+|---|---:|---:|
+| Caída total: (1) − (3) | 0.495 | 0.500 |
+| Caída por el cálculo: (1) − (2) | 0.018 | 0.079 |
+| … por la unión: (2b) − (2) | 0.038 | 0.043 |
+| … por el resto del cálculo: (1) − (2b) (negativo: sube) | −0.021 | 0.037 |
+| Caída por el conjunto: (2) − (3) | 0.477 | 0.420 |
+| **Parte de la caída que viene del cálculo** | 4 % | 16 % |
+| **Parte de la caída que viene del conjunto** | 96 % | 84 % |
+
 - **El conjunto pesa casi todo:** con el mismo cálculo, de (2) a (3) el mAP50-Seg cae 0.477. La puerta casi no pierde (0.907 → 0.896) y el resto cae mucho (elevator, con 19 instancias en el test, es poco estable).
 - **La unión baja** el mAP50-Seg 0.038, sobre todo en wall (0.803 → 0.664, el 85 % de lo que baja wall con el cálculo de BLD-AR) y stair (−0.050).
 - ⚠️ **El resto del cálculo sube** el mAP50-Seg 0.021 solo por sliding_door (+0.308); en las otras 5 clases baja (entre −0.011 y −0.067). Causa sin medir.
 
-> 📌 **Conclusión:** en la media, el cálculo explica el 4 % de la caída del mAP50-Seg (0.018 de 0.495), pero porque sliding_door sube y compensa; sin ella, explica el 16 %. La mayor parte de la caída viene del conjunto (domain gap). Dentro del cálculo, lo que más baja es la unión de SAHI en wall (−0.139 de AP50-Seg).
+> 📌 **Conclusión:** la caída viene casi toda del conjunto (domain gap): el 96 % en la media de las 6 clases y el 84 % sin sliding_door, que con el cálculo de BLD-AR sube y compensa. El cálculo explica el resto (4 % y 16 %); dentro de él, lo que más baja es la unión de SAHI en wall, con el 85 % de lo que pierde wall por el cálculo.
 
 ## Pendiente: medir la unión de SAHI en BLD-AR
 
