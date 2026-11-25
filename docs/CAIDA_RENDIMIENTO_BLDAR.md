@@ -47,6 +47,65 @@ Corta cada plano en tiles de 1024 px que se superponen un 20 %, pasa cada uno po
 
 > 📌 **Conclusión:** la caída viene casi toda del conjunto (domain gap): el 96 % en la media de las 6 clases y el 84 % sin sliding_door, que con el cálculo de BLD-AR sube y compensa. El cálculo explica el resto (4 % y 16 %); dentro de él, lo que más baja es la unión de SAHI en wall, con el 85 % de lo que pierde wall por el cálculo.
 
-## Pendiente: medir la unión de SAHI en BLD-AR
+## 2. Buscar por qué cae el AP50-Seg de wall
 
-La unión probablemente también baja el AP50-Seg de wall en BLD-AR (0.114), pero ahí además hace falta para juntar los muros cortados entre tiles. Lo mide `union-paredes-entre-tiles`.
+**Pregunta:** ¿por qué el AP50-Seg de wall cae de 0.828 en el conjunto de test de FloorPlanCAD a 0.114 en BLD-AR (`01-YOLO26l-SEG-1024`)? Es la clase con más instancias y una de las que más cae: el 77 % viene del conjunto y el 23 % del cálculo, casi todo por la unión de SAHI (sección 1.2).
+
+**Resumen visual:** [`docs/HIPOTESIS_PAREDES.pdf`](HIPOTESIS_PAREDES.pdf) (fuente: [`docs/HIPOTESIS_PAREDES.html`](HIPOTESIS_PAREDES.html)).
+
+**Hipótesis**
+
+| Sección | Hipótesis | Estado | Impacto en el AP50-Seg de wall |
+|---|---|---|---|
+| 1.2 | Cálculo: el 0.828 y el 0.114 no se calculan igual | Hecha | −0.164 (23 % de la caída), casi todo por la unión (0.139) |
+| 2.1 | Corte: el modelo encuentra la pared, pero la corta distinto que la etiqueta | Pendiente | Sin medir |
+| 2.2 | Corte: cuánto se pierde por cortar las paredes distinto | Pendiente | Sin medir |
+| 2.3 | Unión entre tiles: junta paredes distintas | Pendiente | −0.139 en el test de FloorPlanCAD (sección 1.2); sin medir en BLD-AR |
+| 2.4 | Estilo: le cuestan las paredes vacías, sin líneas adentro | Pendiente | Sin medir |
+| 2.5 | Escala: falla con muros mucho más finos o más gruesos | Pendiente | Sin medir |
+| 2.6 | Tipo de modelo: limita la detección de paredes | Pendiente | Sin medir |
+| 2.7 | Dónde "ve" paredes la red (mapas de calor) | Pendiente | Sin medir |
+
+### 2.1 Medir cuántos píxeles de pared coinciden entre predicción y etiqueta
+
+**Script utilizado:** pendiente.
+
+¿El modelo encuentra las paredes, pero las corta distinto que la etiqueta? Compara los píxeles de pared, sin separar paredes, en BLD-AR y en el conjunto de test de FloorPlanCAD.
+
+### 2.2 Medir cuánto AP50-Seg de wall se pierde por cortar las paredes distinto
+
+**Script utilizado:** pendiente.
+
+Recorta lo que marca el modelo con las paredes de la etiqueta y vuelve a medir el AP50-Seg de wall en BLD-AR.
+
+### 2.3 Medir otras formas de unir los muros cortados entre tiles
+
+**Script utilizado:** pendiente.
+
+En BLD-AR la unión de SAHI hace falta para juntar los muros cortados entre tiles, pero también junta paredes vecinas distintas. Compara con el AP50-Seg de wall alternativas a la unión actual (p. ej. NMS).
+
+### 2.4 Medir si al modelo le cuestan las paredes vacías
+
+**Script utilizado:** pendiente.
+
+Compara qué parte de cada pared encuentra el modelo según tenga o no líneas adentro, en una muestra del conjunto de test de FloorPlanCAD.
+
+### 2.5 Medir si falla más con muros mucho más finos o más gruesos
+
+**Script utilizado:** pendiente.
+
+Compara la coincidencia de píxeles de pared de cada plano de BLD-AR con el espesor de sus muros.
+
+### 2.6 Medir si el tipo de modelo limita la detección de paredes
+
+**Script utilizado:** pendiente.
+
+Compara la resolución de las máscaras con el grosor del muro, y mide las paredes en L o U y el máximo de detecciones por tile.
+
+### 2.7 Ver dónde "ve" paredes la red con mapas de calor
+
+**Script utilizado:** pendiente.
+
+Mapas de calor de la red sobre algunos planos de los dos conjuntos (pedido de los profesores).
+
+> 📌 **Conclusión:** pendiente.

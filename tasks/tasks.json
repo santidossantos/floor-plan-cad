@@ -216,9 +216,9 @@
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.3 y su fila en la tabla de hipótesis)"
     ],
-    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.3), con su medida",
     "requiere_servidor": true,
     "status": "not started"
   },
@@ -231,10 +231,9 @@
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
-      "Crear docs/DIAGNOSTICO_PAREDES.md con una tabla para medir las hipótesis de pared: una fila por tarea de diagnóstico de paredes y las columnas Hipótesis, Estado (confirmada, descartada o pendiente), Medida e «Impacto en el AP50-Seg de pared»",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.1 y su fila en la tabla de hipótesis)"
     ],
-    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.1), con su medida",
     "requiere_servidor": true,
     "status": "not started"
   },
@@ -245,12 +244,12 @@
     "pasos": [
       "Investigar las mejores soluciones y acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
-      "Medir también el AP50-Seg de pared de cada grupo (paredes con líneas adentro y vacías), para la columna «Impacto en el AP50-Seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
+      "Medir también el AP50-Seg de pared de cada grupo (paredes con líneas adentro y vacías), para la columna «Impacto en el AP50-Seg de wall» de la tabla de hipótesis de docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2)",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.4 y su fila en la tabla de hipótesis)"
     ],
-    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.4), con su medida",
     "requiere_servidor": true,
     "status": "not started"
   },
@@ -261,12 +260,12 @@
     "pasos": [
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
-      "Medir también el AP50-Seg de pared de cada grupo (planos con espesor parecido al de FloorPlanCAD y muy distinto), para la columna «Impacto en el AP50-Seg de pared» de docs/DIAGNOSTICO_PAREDES.md",
+      "Medir también el AP50-Seg de pared de cada grupo (planos con espesor parecido al de FloorPlanCAD y muy distinto), para la columna «Impacto en el AP50-Seg de wall» de la tabla de hipótesis de docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2)",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.5 y su fila en la tabla de hipótesis)"
     ],
-    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.5), con su medida",
     "requiere_servidor": true,
     "status": "not started"
   },
@@ -279,9 +278,9 @@
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.6 y su fila en la tabla de hipótesis)"
     ],
-    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.6), con su medida",
     "requiere_servidor": true,
     "status": "not started"
   },
@@ -294,9 +293,9 @@
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.7 y su fila en la tabla de hipótesis)"
     ],
-    "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
+    "verificacion": "La hipótesis queda como confirmada o descartada en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.7), con su medida",
     "requiere_servidor": true,
     "status": "not started"
   },
@@ -323,9 +322,9 @@
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "Probarlo localmente con pocos planos",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
+      "Anotar el resultado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.2 y su fila en la tabla de hipótesis)"
     ],
-    "verificacion": "El impacto del corte en el AP50-Seg de pared de BLD-AR queda anotado en docs/DIAGNOSTICO_PAREDES.md, en la columna de impacto de la hipótesis de etiquetado",
+    "verificacion": "El impacto del corte en el AP50-Seg de pared de BLD-AR queda anotado en docs/CAIDA_RENDIMIENTO_BLDAR.md (sección 2.2), en la columna de impacto de la tabla de hipótesis",
     "requiere_servidor": true,
     "status": "not started"
   }
