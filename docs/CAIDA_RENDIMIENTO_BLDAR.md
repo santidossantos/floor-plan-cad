@@ -14,19 +14,20 @@ Corta cada plano en tiles de 1024 px que se superponen un 20 %, pasa cada uno po
 
 ### 1.2 Comparar el AP50-Seg con tres cálculos en el conjunto de test de FloorPlanCAD y con el de BLD-AR
 
-El conjunto de test de FloorPlanCAD con (1) su propio cálculo, (2) el de BLD-AR y (2b) el de BLD-AR sin la unión (`get_prediction` de SAHI: con un tile por plano, es la misma inferencia sin unir). (3) es BLD-AR con su cálculo.
+- 🔵 **Conjunto de test de FloorPlanCAD** (1 566 planos): (1) con su propio cálculo, (2) con el de BLD-AR y (2b) con el de BLD-AR sin la unión (`get_prediction` de SAHI: con un tile por plano, es la misma inferencia sin unir).
+- 🟠 **BLD-AR** (58 planos): (3) con su propio cálculo, el de BLD-AR, con [`scripts/evaluation/evaluate_bldar.ipynb`](../scripts/evaluation/evaluate_bldar.ipynb) (ejecutado en [`runs/01-YOLO26l-SEG-1024/evaluate_segmentation_model.ipynb`](../runs/01-YOLO26l-SEG-1024/evaluate_segmentation_model.ipynb)).
 
-**AP50-Seg por clase: conjunto de test de FloorPlanCAD (1, 2 y 2b) y BLD-AR (3)**
+**AP50-Seg por clase en 🔵 el conjunto de test de FloorPlanCAD y 🟠 BLD-AR**
 
-| Clase | Instancias (test de FloorPlanCAD / BLD-AR) | (1) Cálculo del conjunto de test de FloorPlanCAD | (2) Cálculo de BLD-AR | (2b) Cálculo de BLD-AR sin la unión | (3) BLD-AR |
-|---|---:|---:|---:|---:|---:|
-| wall | 14 040 / 964 | 0.828 | 0.664 | 0.803 | 0.114 |
-| single_door (door) | 2 259 / 294 | 0.959 | 0.907 | 0.908 | 0.896 |
-| window | 1 543 / 269 | 0.856 | 0.822 | 0.845 | 0.455 |
-| sliding_door | 620 / 48 | 0.588 | 0.879 | 0.896 | 0.118 |
-| stair | 1 403 / 79 | 0.795 | 0.678 | 0.728 | 0.302 |
-| elevator | 19 / 38 | 0.887 | 0.857 | 0.857 | 0.059 |
-| Media | | 0.819 | 0.801 | 0.839 | 0.324 |
+| Clase | 🔵 (1) Cálculo del conjunto de test de FloorPlanCAD | 🔵 (2) Cálculo de BLD-AR | 🔵 (2b) Cálculo de BLD-AR sin la unión | 🟠 (3) Cálculo de BLD-AR |
+|---|---:|---:|---:|---:|
+| wall | 0.828 | 0.664 | 0.803 | 0.114 |
+| single_door (door) | 0.959 | 0.907 | 0.908 | 0.896 |
+| window | 0.856 | 0.822 | 0.845 | 0.455 |
+| sliding_door | 0.588 | 0.879 | 0.896 | 0.118 |
+| stair | 0.795 | 0.678 | 0.728 | 0.302 |
+| elevator | 0.887 | 0.857 | 0.857 | 0.059 |
+| Media | 0.819 | 0.801 | 0.839 | 0.324 |
 
 - **El conjunto pesa casi todo:** con el mismo cálculo, de (2) a (3) el mAP50-Seg cae 0.477. La puerta casi no pierde (0.907 → 0.896) y el resto cae mucho (elevator, con 19 instancias en el test, es poco estable).
 - **La unión baja** el mAP50-Seg 0.038, sobre todo en wall (0.803 → 0.664, el 85 % de lo que baja wall con el cálculo de BLD-AR) y stair (−0.050).

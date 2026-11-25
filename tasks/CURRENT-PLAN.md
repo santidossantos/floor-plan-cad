@@ -23,4 +23,6 @@
 - [x] Agregar al notebook el cálculo de BLD-AR sin la unión de SAHI
 - [x] El usuario lo vuelve a correr en el servidor
 - [x] Anotar en `docs/CAIDA_RENDIMIENTO_BLDAR.md` el AP50-Seg por clase con los tres cálculos
+- [x] Quitar el AP50-95 del notebook y alinear sus tablas con `docs/CAIDA_RENDIMIENTO_BLDAR.md`
+- [ ] El usuario lo vuelve a correr en el servidor
 - [ ] Aprobación del script resultante por el usuario.
