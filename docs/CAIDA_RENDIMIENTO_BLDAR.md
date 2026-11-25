@@ -31,9 +31,9 @@ Corta cada plano en tiles de 1024 px que se superponen un 20 %, pasa cada uno po
 
 - **El conjunto pesa casi todo:** con el mismo cálculo, de (2) a (3) el mAP50-Seg cae 0.477. La puerta casi no pierde (0.907 → 0.896) y el resto cae mucho (elevator, con 19 instancias en el test, es poco estable).
 - **La unión baja** el mAP50-Seg 0.038, sobre todo en wall (0.803 → 0.664, el 85 % de lo que baja wall con el cálculo de BLD-AR) y stair (−0.050).
-- **El resto del cálculo sube** el mAP50-Seg 0.021, sobre todo en sliding_door (+0.308). Hipótesis: compara las máscaras a tamaño completo y no a 1/4, lo que favorece a los objetos finos.
+- ⚠️ **El resto del cálculo sube** el mAP50-Seg 0.021 solo por sliding_door (+0.308); en las otras 5 clases baja (entre −0.011 y −0.067). Causa sin medir.
 
-> **Conclusión:** el cálculo explica solo el 4 % de la caída del mAP50-Seg (0.018 de 0.495); la caída viene del conjunto, no de cómo se mide. Dentro del cálculo, lo que más pesa es la unión de SAHI en wall (−0.139 de AP50-Seg).
+> 📌 **Conclusión:** en la media, el cálculo explica el 4 % de la caída del mAP50-Seg (0.018 de 0.495), pero porque sliding_door sube y compensa; sin ella, explica el 16 %. La mayor parte de la caída viene del conjunto (domain gap). Dentro del cálculo, lo que más baja es la unión de SAHI en wall (−0.139 de AP50-Seg).
 
 ## Pendiente: medir la unión de SAHI en BLD-AR
 

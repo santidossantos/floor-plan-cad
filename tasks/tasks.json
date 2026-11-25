@@ -206,7 +206,7 @@
     ],
     "verificacion": "docs/CAIDA_RENDIMIENTO_BLDAR.md tiene, por clase, el AP50-Seg del conjunto de test de FloorPlanCAD con el cálculo del conjunto de test de FloorPlanCAD, con el de BLD-AR y con el de BLD-AR sin la unión de SAHI",
     "requiere_servidor": true,
-    "status": "in progress"
+    "status": "done"
   },
   {
     "id": "union-paredes-entre-tiles",
@@ -216,8 +216,7 @@
       "Acordar con el usuario cómo se confirma o descarta",
       "Crear el notebook en scripts/evaluation/, con la corrida 01-YOLO26l-SEG-1024 y los mismos parámetros que la evaluación en BLD-AR",
       "El usuario lo corre en el servidor",
-      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md",
-      "Mover lo relacionado a este diagnostico, la parte de SAHI y lo que creas que relevante y que no va en EVALUACION.md a docs/CAIDA_RENDIMIENTO_BLDAR.md "
+      "Anotar el resultado en docs/DIAGNOSTICO_PAREDES.md"
     ],
     "verificacion": "La hipótesis queda como confirmada o descartada en docs/DIAGNOSTICO_PAREDES.md, con su medida",
     "requiere_servidor": true,
