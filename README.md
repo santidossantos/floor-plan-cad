@@ -45,9 +45,8 @@ python scripts/conversion/floorplancad_labeled_to_yolo.py \
 
 ## 🔍 Ver anotaciones con LabelMe
 
-[LabelMe](https://github.com/wkentaro/labelme) abre una carpeta y carga el JSON de cada imagen que tenga el mismo nombre.Se ejecuta desde el virtual env. En Linux hay que exportar `QT_QPA_PLATFORM=wayland`.
+[LabelMe](https://github.com/wkentaro/labelme) abre una carpeta y carga el JSON de cada imagen que tenga el mismo nombre. `uv run` lo ejecuta con el `.venv` del repo.
 
 ```bash
-export QT_QPA_PLATFORM=wayland
-labelme datasets/floor-plan-cad-labelme/train-00
+uv run labelme datasets/floor-plan-cad-labelme/train-00
 ```

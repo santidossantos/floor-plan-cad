@@ -4,3 +4,5 @@ Pillow
 numpy
 PyYAML
 labelme==7.8.0
+osam==0.8.1  # la de cuando salió labelme 7.8.0: osam 0.12 quitó osam.apis, que labelme usa
+uv
